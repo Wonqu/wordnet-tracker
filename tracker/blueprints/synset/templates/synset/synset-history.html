@@ -1,0 +1,112 @@
+{% extends 'layouts/app.html' %}
+{% import 'macros/items.html' as items %}
+{% import 'macros/form.html' as f with context %}
+
+{% block title %}Synset History{% endblock %}
+
+{% block content %}
+    <div id="page-wrapper">
+        <div class="row">
+            <div class="col-sm-12">
+                <h2 class="page-header"><i class="fa fa-sitemap fa-fw"></i> Synset History</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-8 pull-left">
+                {% call f.form_tag('synset.synsets_history', css_class='form-inline') %}
+                    {% call f.form_group(form.date_from, css_class='form-group-sm') %}
+                    {% endcall %}
+                    {% call f.form_group(form.date_to, css_class='form-group-sm') %}
+                    {% endcall %}
+                    {% call f.form_group(form.synset_id,  css_class='form-group-sm') %}
+                    {% endcall %}
+                    <button type="submit" class="btn btn-default">Filter</button>
+                {% endcall %}
+            </div>
+            <div class="col-sm-4">
+                <div class="pull-right">
+                    {{ items.paginate(synsets) }}
+                </div>
+            </div>
+        </div>
+        {% if synsets.total == 0 %}
+            <h3>No results found</h3>
+            {% if request.args.get('q') %}
+                <p>Try limiting or removing your search terms.</p>
+            {% else %}
+                <p>There are no synsets changes present.</p>
+            {% endif %}
+        {% else %}
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-condensed table-hover table-striped">
+                            <thead>
+                            <colgroup span="4"></colgroup>
+                            <colgroup span="2"></colgroup>
+                            <colgroup span="2"></colgroup>
+                            <tr>
+                                <th colspan="4" class="text-center" scope="colgroup">Operation</th>
+                                <th colspan="2" class="text-center" scope="colgroup">Synset</th>
+                                <th colspan="2" class="text-center" scope="colgroup">Sense</th>
+                            </tr>
+                            <tr>
+                                <th scope="col" class="col-header">#</th>
+                                <th scope="col" class="col-header">Date</th>
+                                <th scope="col" class="col-header">User</th>
+                                <th scope="col" class="col-header">Action</th>
+                                <th scope="col" class="col-header">ID</th>
+                                <th scope="col" class="col-header">Units</th>
+                                <th scope="col" class="col-header">ID</th>
+                                <th scope="col" class="col-header">Lemma</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for synset in synsets.items %}
+                                {% if synset.operation=='modified' %}
+                                    <tr class="info">
+                                        {% elif synset.operation=='created' or synset.operation =='attached sense' %}
+                                    <tr class="success">
+                                        {% elif synset.operation=='removed' or synset.operation =='detached sense' %}
+                                    <tr class="danger">
+                                {% endif %}
+                            <td>{{ synset.id }}</td>
+                            <td>{{ synset.datetime }}</td>
+                            <td>{{ synset.user }}</td>
+                            <td>
+                                {% if synset.operation=='modified' %}
+                                    <span class="label label-info">Modified</span>
+                                {% elif synset.operation=='created' %}
+                                    <span class="label label-success">Created</span>
+                                {% elif synset.operation =='attached sense' %}
+                                    <span class="label label-success">Attached Sense</span>
+                                {% elif synset.operation=='removed' %}
+                                    <span class="label label-danger">Removed</span>
+                                {% elif synset.operation =='detached sense' %}
+                                    <span class="label label-danger">Detached Sense</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ synset.synset_id }}</td>
+                            <td>{{ synset.synset_unitstr }}</td>
+                            <td>{{ synset.sense_id }}</td>
+                            <td>{{ synset.lemma }}</td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.table-responsive -->
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="pull-right">
+                        {{ items.paginate(synsets) }}
+                    </div>
+                </div>
+            </div>
+            <!-- /.row -->
+            </div>
+        {% endif %}
+
+{% endblock %}

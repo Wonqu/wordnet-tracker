@@ -1,0 +1,28 @@
+{% extends 'layouts/base.html' %}
+
+{% block header %}
+{% endblock %}
+
+{% block sidemenu %}
+        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="{{ url_for('page.home') }}"><i class="fa fa-fw fa-eye text-primary"></i> WordNet Tracker</a>
+            </div>
+        </nav>
+{% endblock %}
+
+{% block footer %}
+ <footer class="footer text-center">
+    <div class="container">
+        <ul class="list-inline">
+            <li class="text-muted">WordNet Tracker &copy; 2018</li>
+        </ul>
+    </div>
+</footer>
+{% endblock %}

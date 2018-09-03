@@ -1,5 +1,7 @@
 from _operator import or_
 
+from sqlalchemy import and_
+
 from lib.util_sqlalchemy import AwareDateTime
 from tracker.extensions import db
 
@@ -61,6 +63,25 @@ class TrackerSynsetsHistory(db.Model):
                         TrackerSynsetsHistory.user.ilike(search_query))
 
         return or_(*search_chain)
+
+    @classmethod
+    def search_by_form_filter(cls, date_from, date_to, synset_id):
+        """
+        Search a resource by 1 or more fields.
+
+        :param query: Search query
+        :type query: str
+        :return: SQLAlchemy filter
+        """
+        search_chain = list()
+
+        if date_from is not '':
+            search_chain.append(TrackerSynsetsHistory.datetime <= date_from)
+        if date_to is not '':
+            search_chain.append(TrackerSynsetsHistory.datetime >= date_to)
+        if synset_id is not '':
+            search_chain.append(TrackerSynsetsHistory.synset_id == synset_id)
+        return and_(*search_chain)
 
 
 class Tracker(db.Model):

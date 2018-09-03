@@ -26,7 +26,9 @@ def synsets_history(page):
     filter_form = SynsetHistoryForm()
 
     paginated_synsets = TrackerSynsetsHistory.query \
-        .filter(TrackerSynsetsHistory.search(request.args.get('q', '')))
+        .filter(TrackerSynsetsHistory.search_by_form_filter(request.args.get('date_from', ''),
+                                                            request.args.get('date_to', ''),
+                                                            request.args.get('synset_id', '')))
 
     pagination = optimised_pagination(paginated_synsets, 50, page)
 

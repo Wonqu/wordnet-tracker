@@ -1,9 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import HiddenField, DateField, IntegerField
+from wtforms import DateField, IntegerField
 
 
 class SynsetHistoryForm(FlaskForm):
-    next = HiddenField()
-    date_from = DateField('Changes from')
-    date_to = DateField('Changes to')
-    synset_id = IntegerField('Synset ID')
+    date_from = DateField("date from", format="%Y-%m-%d")
+    date_to = DateField("date to", format="%Y-%m-%d")
+    synset_id = IntegerField()

@@ -1,0 +1,168 @@
+{% extends 'layouts/app.html' %}
+{% import 'macros/items.html' as items %}
+
+{% block title %}Synset{% endblock %}
+
+{% block content %}
+    <div id="page-wrapper">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3 class="page-header"><i class="fa fa-sitemap fa-fw"></i> Synset</h3>
+            </div>
+        </div>
+        <div class="row margin-bottom-15">
+            <div class="col-sm-5">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="fa fa-bar-chart-o fa-fw"></i> Synset Properties
+                    </div>
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <tbody>
+                                <tr>
+                                    <td class="col-sm-3 text-right">Id</td>
+                                    <td>{{ synset.id }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-right">Definition</td>
+                                    <td>{{ synset.definition }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-right">Abstract</td>
+                                    <td>{{ synset.isabstract }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-right">Comment</td>
+                                    <td>{{ synset.comment }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-right">Owner</td>
+                                    <td>{{ synset.owner }}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-7">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="fa fa-bar-chart-o fa-fw"></i> Synset History
+                    </div>
+                    <div class="panel-body">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-5">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="fa fa-bar-chart-o fa-fw"></i> Senses
+                    </div>
+                    <div class="panel-body">
+                        <div class="list-group">
+                                {% for s in senses %}
+                                <a href="{{ url_for('sense.sense_by_id', id=s[0]) }}" class="list-group-item">
+                                    {{  s[1] }}
+                                    <span class="pull-right text-muted small"><em>{{ s[2] }}</em>
+                                    </span>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-7">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="fa fa-bar-chart-o fa-fw"></i> Senses History
+                    </div>
+                    <div class="panel-body">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-5">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="fa fa-bar-chart-o fa-fw"></i> Incoming Relations
+                    </div>
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-condensed table-hover table-striped">
+                                <thead>
+                                <tr>
+                                    <th class="text-center">Relation</th>
+                                    <th class="text-center">Synset</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for r in incoming_rel %}
+                                    <tr>
+                                        <td>{{ r[0] }}</td>
+                                        <td>
+                                            <a href="{{ url_for('synset.synset_by_id', id=r[1]) }}"> {{ r[2] }}</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-7">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <i class="fa fa-bar-chart-o fa-fw"></i> Incoming Relations History
+                        </div>
+                        <div class="panel-body">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-5">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <i class="fa fa-bar-chart-o fa-fw"></i> Outgoing Relations
+                        </div>
+                        <div class="panel-body">
+                             <table class="table table-bordered table-condensed table-hover table-striped">
+                                <thead>
+                                <tr>
+                                    <th class="text-center">Relation</th>
+                                    <th class="text-center">Synset</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for r in outgoing_rel %}
+                                    <tr>
+                                        <td>{{ r[0] }}</td>
+                                        <td>
+                                            <a href="{{ url_for('synset.synset_by_id', id=r[1]) }}"> {{ r[2] }}</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-7">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <i class="fa fa-bar-chart-o fa-fw"></i> Outgoing Relations History
+                        </div>
+                        <div class="panel-body">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

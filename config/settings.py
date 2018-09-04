@@ -17,3 +17,6 @@ SQLALCHEMY_BINDS = {
     'users':        'mysql+pymysql://wordnet:root@192.168.1.106:3306/wordnet',
 }
 SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+# Cache
+MEMCACHED_SERVERS = 'memcached:11211'

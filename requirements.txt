@@ -22,5 +22,6 @@ flask-debugtoolbar==0.10.0
 flask-less==0.4
 Flask-Login==0.4.*
 Flask-Limiter==1.0.*
+python-memcached==1.59
 
 

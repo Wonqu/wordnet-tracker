@@ -1,10 +1,13 @@
 import datetime
 
+from flask import request
+from flask_sqlalchemy import Pagination
 from sqlalchemy import DateTime
 from sqlalchemy.types import TypeDecorator
+from werkzeug.exceptions import abort
 
 from lib.util_datetime import tzware_datetime
-from tracker.extensions import db
+from tracker.extensions import db, cache
 
 
 class AwareDateTime(TypeDecorator):
@@ -130,3 +133,118 @@ class ResourceMixin(object):
 
         values = ', '.join("%s=%r" % (n, getattr(self, n)) for n in columns)
         return '<%s %s(%s)>' % (obj_id, self.__class__.__name__, values)
+
+
+def optimised_pagination(query, per_page, page):
+    ''' A more efficient pagination for SQLAlchemy
+    Fetch one item before offset (to know if there's a previous page)
+    Fetch one item after limit (to know if there's a next page)
+    The trade-off is that the total items are not available, but if you don't need them
+    there's no need for an extra COUNT query
+    '''
+    offset_start = (page - 1) * per_page
+
+    query_offset = max(offset_start - 1, 0)
+    optimistic_items = query.limit(per_page + 1).offset(query_offset).all()
+    if page == 1:
+        if len(optimistic_items) == per_page + 1:
+            # On first page, there's no optimistic item for previous page
+            items = optimistic_items[:-1]
+        else:
+            # The number of items on the first page is fewer than per_page
+            items = optimistic_items
+    elif len(optimistic_items) == per_page + 2:
+        # We fetched an extra item on both ends
+        items = optimistic_items[1:-1]
+    else:
+        # An extra item only on the head
+        # This is the last page
+        items = optimistic_items[1:]
+    # This total is at least the number of items for the query, could be more
+    total = offset_start + len(optimistic_items)
+    return Pagination(query, page, per_page, total, items)
+
+
+def paginate(query, page=None, per_page=None, total_cache_key=''):
+    """Returns ``per_page`` items from page ``page``.
+
+    If ``page`` or ``per_page`` are ``None``, they will be retrieved from
+    the request query. If ``max_per_page`` is specified, ``per_page`` will
+    be limited to that value. If there is no request or they aren't in the
+    query, they default to 1 and 20 respectively.
+
+    When ``error_out`` is ``True`` (default), the following rules will
+    cause a 404 response:
+
+    * No items are found and ``page`` is not 1.
+    * ``page`` is less than 1, or ``per_page`` is negative.
+    * ``page`` or ``per_page`` are not ints.
+
+    When ``error_out`` is ``False``, ``page`` and ``per_page`` default to
+    1 and 20 respectively.
+
+    Returns a :class:`Pagination` object.
+    """
+
+    error_out = True
+    max_per_page = None
+
+    if request:
+        if page is None:
+            try:
+                page = int(request.args.get('page', 1))
+            except (TypeError, ValueError):
+                if error_out:
+                    abort(404)
+
+                page = 1
+
+        if per_page is None:
+            try:
+                per_page = int(request.args.get('per_page', 20))
+            except (TypeError, ValueError):
+                if error_out:
+                    abort(404)
+
+                per_page = 20
+    else:
+        if page is None:
+            page = 1
+
+        if per_page is None:
+            per_page = 20
+
+    if max_per_page is not None:
+        per_page = min(per_page, max_per_page)
+
+    if page < 1:
+        if error_out:
+            abort(404)
+        else:
+            page = 1
+
+    if per_page < 0:
+        if error_out:
+            abort(404)
+        else:
+            per_page = 20
+
+    items = query.limit(per_page).offset((page - 1) * per_page).all()
+
+    if not items and page != 1 and error_out:
+        abort(404)
+
+    # No need to count if we're on the first page and there are fewer
+    # items than we expected.
+    if page == 1 and len(items) < per_page:
+        total = len(items)
+    else:
+        if total_cache_key != '':
+            total = cache.get(total_cache_key)
+            if total is None:
+                total = query.order_by(None).count()
+                cache.set(total_cache_key, total, timeout=10 * 60)
+        else:
+            total = query.order_by(None).count()
+
+    return Pagination(query, page, per_page, total, items)

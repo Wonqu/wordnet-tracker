@@ -1,7 +1,12 @@
 from flask import (
     Blueprint,
-    render_template)
+    render_template, request)
 from flask_login import login_required
+
+from lib.util_sqlalchemy import paginate
+from tracker.blueprints.sense.forms import SenseRelationsHistoryForm
+from tracker.blueprints.sense.models import get_sense_relation_list, TrackerSenseRelationsHistory
+from tracker.blueprints.synset.models import get_user_name_list
 
 sense = Blueprint('sense', __name__, template_folder='templates')
 
@@ -10,7 +15,6 @@ sense = Blueprint('sense', __name__, template_folder='templates')
 @sense.route('/senses/history/page/<int:page>')
 @login_required
 def senses_history(page):
-
     return render_template('sense/sense-history.html',
                            senses=[])
 
@@ -19,6 +23,36 @@ def senses_history(page):
 @sense.route('/senses/relations/history/page/<int:page>')
 @login_required
 def senses_relations_history(page):
+    filter_form = SenseRelationsHistoryForm()
+
+    users = get_user_name_list()
+    relations = get_sense_relation_list()
+
+    cache_key = 'lurh-count-' + \
+                request.args.get('date_from', '') + "_" + \
+                request.args.get('date_to', '') + "_" + \
+                request.args.get('sense_id', '') + "_" + \
+                request.args.get('user', '') + "_" + \
+                request.args.get('relation_type', '')
+
+    paginated_senses = TrackerSenseRelationsHistory.query \
+        .filter(TrackerSenseRelationsHistory.search_by_form_filter(request.args.get('date_from', ''),
+                                                                   request.args.get('date_to', ''),
+                                                                   request.args.get('sense_id', ''),
+                                                                   request.args.get('user', ''),
+                                                                   request.args.get('relation_type', '')))
+
+    pagination = paginate(paginated_senses, page, 50, cache_key)
 
     return render_template('sense/sense-relations-history.html',
-                           senses=[])
+                           form=filter_form,
+                           users=users,
+                           relations=relations,
+
+                           history=pagination)
+
+
+@sense.route('/sense/<int:id>')
+@login_required
+def sense_by_id(id):
+    return render_template('sense/sense.html')

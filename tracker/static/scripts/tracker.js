@@ -40,3 +40,13 @@ $(function() {
         }
     }
 });
+
+$("#synset-search").keyup(function(event) {
+    if (event.keyCode === 13) {
+        location.href = '/synsets?gq='+$('#synset-search').val();
+    }
+});
+
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();
+});

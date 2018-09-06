@@ -8,7 +8,7 @@
     <div id="page-wrapper">
         <div class="row">
             <div class="col-lg-12">
-                <h3 class="page-header"><i class="fa fa-sitemap fa-fw"></i> Sense Relations History</h3>
+                <h3 class="page-header"><i class="fa fa-object-group fa-fw"></i> Sense Relations History</h3>
             </div>
         </div>
         <div class="row margin-bottom-15">
@@ -127,25 +127,24 @@
                                     <span class="label label-danger">Removed</span>
                                 {% endif %}
                             </td>
-                            <td>{{ r.source_id }}</td>
+                            <td> {% if r.source_id is not none %}
+                                    <a href="{{ url_for('sense.sense_by_id', id=r.source_id) }}">{{ r.source_id }}</a>
+                                {% endif %}</td>
                             <td>
                                  {% if r.source_unitstr is not none %}
                                     {{ r.source_unitstr }}
-                                {%  else %}
-                                {% endif %}
+                                  {% endif %}
                             </td>
                                 <td>{{ r.relation_id }}</td>
                                 <td>{{ r.relation_name }}</td>
                             <td>
-                                {% if r.target_id is not none %}
-                                    {{ r.target_id }}
-                                {%  else %}
+                               {% if r.target_id is not none %}
+                                    <a href="{{ url_for('sense.sense_by_id', id=r.target_id) }}">{{ r.target_id }}</a>
                                 {% endif %}
                             </td>
                             <td>
                                 {% if r.target_unitstr is not none %}
                                     {{ r.target_unitstr }}
-                                {%  else %}
                                 {% endif %}
                             </td>
                             </tr>

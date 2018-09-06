@@ -1,0 +1,115 @@
+{% extends 'layouts/app.html' %}
+{% import 'macros/items.html' as items %}
+{% import 'macros/form.html' as f with context %}
+
+{% block title %}Users Activity Summary{% endblock %}
+
+{% block content %}
+    <div id="page-wrapper">
+        <div class="row">
+            <div class="col-lg-12">
+                <h3 class="page-header"><i class="fa fa-users fa-fw"></i> Users Activity Summary</h3>
+            </div>
+        </div>
+        <div class="row margin-bottom-15">
+            <div class="col-sm-12">
+                {% call f.form_tag('user.users_activity', css_class='form-inline', method='get') %}
+
+                    <div class="input-group input-group-sm date" id='date_from'>
+                        <input id="date_from" name="date_from" type="text" class="form-control"
+                               placeholder="Changes From" value="{{ request.args.get('date_from', '') }}">
+                        <div class="input-group-addon">
+                            <i class="fa fa-calendar"></i>
+                        </div>
+                    </div>
+                    <div class="input-group input-group-sm date" id='date_to'>
+                        <input id="date_to" name="date_to" type="text" class="form-control" placeholder="Changes To"
+                               value="{{ request.args.get('date_to', '') }}">
+                        <div class="input-group-addon">
+                            <i class="fa fa-calendar"></i>
+                        </div>
+                    </div>
+                    <script type="text/javascript">
+                        $(function () {
+                            $('#date_from').datetimepicker({
+                                format: 'YYYY-MM-DD'
+                            });
+                            $('#date_to').datetimepicker({
+                                format: 'YYYY-MM-DD'
+                            });
+                        });
+                    </script>
+                    <button type="submit" class="btn btn-default btn-sm"><i class="fa fa-search"></i> Search</button>
+                {% endcall %}
+            </div>
+        </div>
+        {% if stats.rowcount == 0 %}
+            <h3>No results found</h3>
+            <p>Try limiting or removing your search terms.</p>
+        {% else %}
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-condensed table-hover table-striped">
+                            <thead>
+                            <tr>
+                                <th rowspan="2" class="text-center" scope="colgroup">User</th>
+                                <th colspan="3" class="text-center" scope="colgroup">Sense</th>
+                                <th colspan="2" class="text-center" scope="colgroup">Sense Relation</th>
+                                <th colspan="3" class="text-center" scope="colgroup">Synset</th>
+                                <th colspan="2" class="text-center" scope="colgroup">Synset Relation</th>
+                                <th rowspan="2" class="text-center" scope="colgroup">Total</th>
+                            </tr>
+                            <tr>
+                                <th class="col-header bg-success">Created</th>
+                                <th class="col-header bg-info">Modified</th>
+                                <th class="col-header bg-danger">Removed</th>
+                                <th class="col-header bg-success">Created</th>
+                                <th class="col-header bg-danger">Removed</th>
+                                <th class="col-header bg-success">Created</th>
+                                <th class="col-header bg-info">Modified</th>
+                                <th class="col-header bg-danger">Removed</th>
+                                <th class="col-header bg-success">Created</th>
+                                <th class="col-header bg-danger">Removed</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for s in stats %}
+                                <tr>
+                                    <td>{{ s[0] }}</td>
+                                    <td class="bg-success">{{ s[1] }}</td>
+                                    <td class="bg-info">{{ s[2] }}</td>
+                                    <td class="bg-danger">{{ s[3] }}</td>
+                                    <td class="bg-success">{{ s[4] }}</td>
+                                    <td class="bg-danger"> {{ s[5] }}</td>
+                                    <td class="bg-success">{{ s[6] }}</td>
+                                    <td class="bg-info">{{ s[7] }}</td>
+                                    <td class="bg-danger">{{ s[8] }}</td>
+                                    <td class="bg-success">{{ s[9] }}</td>
+                                    <td class="bg-danger">{{ s[10] }}</td>
+                                    <td>{{ s[1:11]|sum }}</td>
+                                </tr>
+                            {% endfor %}
+                            <tr>
+                                <td><b>Total</b></td>
+                                <td>
+                                </td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+{% endblock %}

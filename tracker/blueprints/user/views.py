@@ -1,3 +1,5 @@
+from time import gmtime, strftime
+
 from flask import (
     Blueprint,
     redirect,
@@ -13,8 +15,8 @@ from flask_login import (
 from sqlalchemy import text
 from lib.safe_next_url import safe_next_url
 from tracker.blueprints.user.decorator import anonymous_required
-from tracker.blueprints.user.forms import LoginForm, SearchForm
-from tracker.blueprints.user.models import User
+from tracker.blueprints.user.forms import LoginForm, SearchForm, UserActivityForm
+from tracker.blueprints.user.models import User, user_activity_day, user_activity_between_dates
 
 user = Blueprint('user', __name__, template_folder='templates')
 
@@ -85,3 +87,19 @@ def logout():
     logout_user()
     flash('You have been logged out.', 'success')
     return redirect(url_for('user.login'))
+
+
+@user.route('/users/activity')
+@login_required
+def users_activity():
+
+    search_from = UserActivityForm()
+
+    if request.args.get('date_from', '') != '' and request.args.get('date_to', '') != '':
+        stats = user_activity_between_dates(request.args.get('date_from', ''), request.args.get('date_to', ''))
+    else:
+        stats = user_activity_day(strftime("%Y-%m-%d", gmtime()))
+
+    return render_template('user/users-activity.html',
+                           form=search_from,
+                           stats=stats)

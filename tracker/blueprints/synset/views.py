@@ -8,9 +8,22 @@ from lib.util_sqlalchemy import paginate
 from tracker.blueprints.synset.forms import SynsetHistoryForm, SynsetRelationsHistoryForm
 from tracker.blueprints.synset.models import TrackerSynsetsHistory, get_user_name_list, \
     TrackerSynsetsRelationsHistory, get_synset_relation_list, Synset, find_synset_incoming_relations, \
-    find_synset_outgoing_relations, find_synset_senses
+    find_synset_outgoing_relations, find_synset_senses, find_synset_sense_history, find_synset_history
+
 
 synset = Blueprint('synset', __name__, template_folder='templates')
+
+
+@synset.route('/synsets', defaults={'page': 1})
+@synset.route('/synsets/page/<int:page>')
+@login_required
+def synsets(page):
+    paginated_users = Synset.query \
+        .filter(Synset.search(request.args.get('gq', ''))) \
+        .paginate(page, 50, True)
+
+    return render_template('synset/synsets.html',
+                           synsets=paginated_users)
 
 
 @synset.route('/synsets/relations/history', defaults={'page': 1})
@@ -72,18 +85,27 @@ def synsets_history(page):
                            synsets=pagination)
 
 
-@synset.route('/synset/<int:id>')
+@synset.route('/synsets/<int:id>')
 @login_required
 def synset_by_id(id):
 
     synset = Synset.query.get(id)
+    synset_history = find_synset_history(id)
 
     incoming_rel = find_synset_incoming_relations(id)
+    incoming_history = TrackerSynsetsRelationsHistory.query.filter(TrackerSynsetsRelationsHistory.target_id == id).all()
+
     outgoing_rel = find_synset_outgoing_relations(id)
+    outgoing_history = TrackerSynsetsRelationsHistory.query.filter(TrackerSynsetsRelationsHistory.source_id == id).all()
+
     senses = find_synset_senses(id)
+    senses_history = find_synset_sense_history(id)
 
     return render_template('synset/synset.html',
                            incoming_rel=incoming_rel,
                            outgoing_rel=outgoing_rel,
+                           outgoing_history=outgoing_history,
+                           incoming_history=incoming_history,
+                           senses_history=senses_history,
                            senses=senses,
-                           synset=synset)
+                           synset=synset,synset_history=synset_history)

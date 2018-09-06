@@ -127,25 +127,26 @@
                                     <span class="label label-danger">Removed</span>
                                 {% endif %}
                             </td>
-                            <td>{{ r.source_id }}</td>
+                            <td>
+                                {% if r.source_id is not none %}
+                                    <a href="{{ url_for('synset.synset_by_id', id=r.source_id) }}">{{ r.source_id }}</a>
+                                {% endif %}
+                            </td>
                             <td>
                                  {% if r.source_unitstr is not none %}
                                     {{ r.source_unitstr }}
-                                {%  else %}
                                 {% endif %}
                             </td>
                                 <td>{{ r.relation_id }}</td>
                                 <td>{{ r.relation_name }}</td>
                             <td>
                                 {% if r.target_id is not none %}
-                                    {{ r.target_id }}
-                                {%  else %}
+                                    <a href="{{ url_for('synset.synset_by_id', id=r.target_id) }}">{{ r.target_id }}</a>
                                 {% endif %}
                             </td>
                             <td>
                                 {% if r.target_unitstr is not none %}
                                     {{ r.target_unitstr }}
-                                {%  else %}
                                 {% endif %}
                             </td>
                             </tr>

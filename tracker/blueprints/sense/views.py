@@ -4,19 +4,41 @@ from flask import (
 from flask_login import login_required
 
 from lib.util_sqlalchemy import paginate
-from tracker.blueprints.sense.forms import SenseRelationsHistoryForm
-from tracker.blueprints.sense.models import get_sense_relation_list, TrackerSenseRelationsHistory
+from tracker.blueprints.sense.forms import SenseRelationsHistoryForm, SenseHistoryForm
+from tracker.blueprints.sense.models import get_sense_relation_list, TrackerSenseRelationsHistory, Sense, \
+    find_sense_history, find_sense_incoming_relations, find_sense_outgoing_relations, TrackerSenseHistory
 from tracker.blueprints.synset.models import get_user_name_list
 
 sense = Blueprint('sense', __name__, template_folder='templates')
+
+
+class SenseistoryForm(object):
+    pass
 
 
 @sense.route('/senses/history', defaults={'page': 1})
 @sense.route('/senses/history/page/<int:page>')
 @login_required
 def senses_history(page):
+
+    filter_form = SenseHistoryForm()
+
+    paginated_senses = TrackerSenseHistory.query \
+        .filter(TrackerSenseHistory.search_by_form_filter(request.args.get('date_from', ''),
+                                                                   request.args.get('date_to', ''),
+                                                                   request.args.get('sense_id', ''),
+                                                                   request.args.get('user', '')))
+    cache_key = 'luh-count-' + \
+                request.args.get('date_from', '') + "_" + \
+                request.args.get('date_to', '') + "_" + \
+                request.args.get('sense_id', '') + "_" + \
+                request.args.get('user', '')
+
+    pagination = paginate(paginated_senses, page, 50, cache_key)
+
     return render_template('sense/sense-history.html',
-                           senses=[])
+                           form=filter_form,
+                           sense_history=pagination)
 
 
 @sense.route('/senses/relations/history', defaults={'page': 1})
@@ -48,11 +70,26 @@ def senses_relations_history(page):
                            form=filter_form,
                            users=users,
                            relations=relations,
-
                            history=pagination)
 
 
 @sense.route('/sense/<int:id>')
 @login_required
 def sense_by_id(id):
-    return render_template('sense/sense.html')
+
+    sense = Sense.query.get(id)
+    sense_hist = find_sense_history(id)
+
+    incoming_rel = find_sense_incoming_relations(id)
+    incoming_history = TrackerSenseRelationsHistory.query.filter(TrackerSenseRelationsHistory.target_id == id).all()
+
+    outgoing_rel = find_sense_outgoing_relations(id)
+    outgoing_history = TrackerSenseRelationsHistory.query.filter(TrackerSenseRelationsHistory.source_id == id).all()
+
+    return render_template('sense/sense.html',
+                           sense=sense,
+                           sense_history=sense_hist,
+                           incoming_rel=incoming_rel,
+                           outgoing_rel=outgoing_rel,
+                           outgoing_history=outgoing_history,
+                           incoming_history=incoming_history)

@@ -17,7 +17,7 @@ case
     when s.unitsstr is not null then s.unitsstr
 end as synset_unitstr,
     l.id as sense_id,
-    l.lemma as lemma
+    concat(l.lemma," ",l.variant) as lemma
 FROM tracker t
    LEFT JOIN tracker_unitandsynset uas ON (uas.tid=t.tid AND t.table='unitandsynset')
    LEFT JOIN tracker_synset ts ON (ts.tid=t.tid AND t.table='synset')
@@ -71,3 +71,23 @@ LEFT JOIN `lexicalunit` tchild ON (tchild.ID=tsyn.CHILD_ID)
 WHERE t.table = "lexicalrelation"
 AND ( t.inserted = 1 OR t.deleted = 1 OR t.data_before_change IS NOT NULL)
 ORDER BY t.id DESC
+
+CREATE VIEW view_tracker_sense_history AS
+SELECT tr.id, tr.datetime, tr.user,
+case
+	when tr.inserted = 1  then 'created'
+	when tr.deleted = 1  then 'removed'
+    when tr.inserted = 0 and tr.deleted = 0 then 'modified'
+end as operation,
+lu.id as k_id, lu.lemma as k_lemma,
+tlu.lemma as tu1_lemma, tlu.variant as tu1_variant, tlu.domain as tu1_domain, tlu.pos as tu1_pos,
+tlu.status as tu1_status ,tlu.comment as tu1_comment, tlu.owner as tu1_owner,
+tlu2.lemma as tu2_lemma,tlu2.variant as tu2_variant,tlu2.domain as tu2_domain, tlu2.pos as tu2_pos,
+tlu2.status as tu2_status,tlu2.comment as tu2_comment, tlu2.owner as tu2_owner
+FROM tracker tr
+JOIN tracker_lexicalunit tlu ON (tlu.tid = tr.tid)
+LEFT JOIN tracker tr2 ON (tr.id = tr2.data_before_change)
+LEFT JOIN tracker_lexicalunit tlu2 ON (tr2.tid = tlu2.tid)
+LEFT JOIN lexicalunit lu ON (lu.ID = tlu.ID)
+WHERE tr.data_before_change IS NULL AND tr.`table` = 'lexicalunit'
+ORDER BY tr.datetime desc

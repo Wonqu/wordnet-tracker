@@ -1,0 +1,55 @@
+{% extends 'layouts/app.html' %}
+{% import 'macros/items.html' as items %}
+{% import 'macros/form.html' as f with context %}
+
+{% block title %}Synsets {% endblock %}
+
+{% block content %}
+    <div id="page-wrapper">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3 class="page-header"><i class="fa fa-sitemap fa-fw"></i> Synsets</h3>
+            </div>
+        </div>
+        {% if synsets.total == 0 %}
+            <h3>No results found</h3>
+            <p>Try other lemma or synset id.</p>
+        {% else %}
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-condensed table-hover table-striped">
+                            <thead>
+                            <tr>
+                                <th scope="col" class="col-header">Id</th>
+                                <th scope="col" class="col-header">Synset</th>
+                                <th scope="col" class="col-header">Owner</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for synset in synsets.items %}
+                            <td>{{ synset.id }}</td>
+                            <td>
+                                <a href="{{ url_for('synset.synset_by_id', id=synset.id) }}"> {{ synset.unitsstr }}</a>
+                            </td>
+                            <td>{{ synset.owner }}</td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.table-responsive -->
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="pull-right">
+                        {{ items.paginate(synsets) }}
+                    </div>
+                </div>
+            </div>
+            <!-- /.row -->
+            </div>
+        {% endif %}
+
+{% endblock %}

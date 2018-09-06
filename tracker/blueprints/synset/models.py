@@ -251,7 +251,8 @@ def get_synset_relation_list():
     if relations is None:
         relations = []
 
-        sql = text('select distinct tsr.REL_ID, r.name  from tracker_synsetrelation tsr join relationtype r on r.ID=tsr.REL_ID')
+        sql = text(
+            'select distinct tsr.REL_ID, r.name  from tracker_synsetrelation tsr join relationtype r on r.ID=tsr.REL_ID')
         result = db.engine.execute(sql)
         for row in result:
             relations.append(row)
@@ -288,6 +289,33 @@ def find_synset_senses(id):
     )
     return db.engine.execute(sql, {'id': id})
 
+
+def find_synset_sense_history(id):
+    sql = text('SELECT t.datetime, t.user, \
+            case \
+                when t.inserted = 1 and t.table ="unitandsynset" then "attached sense" \
+                when t.deleted = 1 and t.table ="unitandsynset" then "detached sense" \
+            end as operation, l.id as sense_id, concat(l.lemma," ",l.variant) as lemma \
+            FROM tracker t \
+            LEFT JOIN tracker_unitandsynset uas ON (uas.tid=t.tid AND t.table="unitandsynset") \
+            LEFT JOIN lexicalunit l ON (uas.lex_id=l.id) \
+            WHERE  uas.tid IS NOT NULL AND ( t.inserted = 1 OR t.deleted = 1 OR t.data_before_change IS NOT NULL) \
+            And uas.SYN_ID = :id ORDER BY t.id DESC')
+    return db.engine.execute(sql, {'id': id})
+
+
+def find_synset_history(id):
+    sql = text('SELECT t.datetime, t.user, \
+            case \
+	            when t.inserted = 1  then "created" \
+	            when t.deleted = 1  then "removed" \
+                when t.inserted = 0 and t.deleted = 0 then "modified" \
+            end as operation, ts.definition, ts.comment, ts.isabstract, \
+            ts.owner, ts.unitsstr FROM tracker t \
+            LEFT JOIN tracker_synset ts ON (ts.tid=t.tid AND t.table="synset") \
+            WHERE ts.tid IS NOT NULL AND ( t.inserted = 1 OR t.deleted = 1 OR t.data_before_change IS NOT NULL) \
+            AND ts.ID = :id ORDER BY t.id DESC')
+    return db.engine.execute(sql, {'id': id})
 
 class SynsetTracker(db.Model):
     __tablename__ = 'tracker_synset'
@@ -462,10 +490,7 @@ class Synset(db.Model):
             return ''
 
         search_query = '%{0}%'.format(query)
-        search_chain = (Synset.definition.ilike(search_query),
-                        Synset.comment.ilike(search_query),
-                        Synset.owner.ilike(search_query),
-                        Synset.status.ilike(search_query),
-                        Synset.unitstr.ilike(search_query))
+        search_chain = (Synset.id == query,
+                        Synset.unitsstr.ilike(search_query))
 
         return or_(*search_chain)

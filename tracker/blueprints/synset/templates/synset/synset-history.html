@@ -78,7 +78,7 @@
                             <tr>
                                 <th colspan="4" class="text-center" scope="colgroup">Operation</th>
                                 <th colspan="2" class="text-center" scope="colgroup">Synset</th>
-                                <th colspan="2" class="text-center" scope="colgroup">Sense</th>
+                                <th colspan="1" class="text-center" scope="colgroup">Sense</th>
                             </tr>
                             <tr>
                                 <th scope="col" class="col-header">#</th>
@@ -87,8 +87,7 @@
                                 <th scope="col" class="col-header">Action</th>
                                 <th scope="col" class="col-header">ID</th>
                                 <th scope="col" class="col-header">Units</th>
-                                <th scope="col" class="col-header">ID</th>
-                                <th scope="col" class="col-header">Lemma</th>
+                                <th scope="col" class="col-header">Lemma and variant</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -125,20 +124,11 @@
                             <td>
                                 {% if synset.synset_unitstr is not none %}
                                     {{ synset.synset_unitstr }}
-                                {% else %}
                                 {% endif %}
                             </td>
                             <td>
                                 {% if synset.sense_id is not none %}
-                                    {{ synset.sense_id }}
-                                {% else %}
-                                {% endif %}
-                            </td>
-
-                            <td>
-                                {% if synset.lemma is not none %}
-                                    {{ synset.lemma }}
-                                {% else %}
+                                    <a href="{{ url_for('sense.sense_by_id', id=synset.sense_id) }}" data-toggle="tooltip" title="ID: {{ synset.sense_id }}">{{ synset.lemma }}</a>
                                 {% endif %}
                             </td>
                             </tr>

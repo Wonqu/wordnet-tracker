@@ -14,7 +14,7 @@
             <div class="col-sm-5">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <i class="fa fa-bar-chart-o fa-fw"></i> Synset Properties
+                        <i class="fa fa-th-list"></i> Synset Properties
                     </div>
                     <div class="panel-body">
                         <div class="table-responsive">
@@ -29,17 +29,21 @@
                                     <td>{{ synset.definition }}</td>
                                 </tr>
                                 <tr>
-                                    <td class="text-right">Abstract</td>
-                                    <td>{{ synset.isabstract }}</td>
-                                </tr>
-                                <tr>
                                     <td class="text-right">Comment</td>
                                     <td>{{ synset.comment }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-right">Abstract</td>
+                                    <td>{{ synset.isabstract }}</td>
                                 </tr>
                                 <tr>
                                     <td class="text-right">Owner</td>
                                     <td>{{ synset.owner }}</td>
                                 </tr>
+                                <tr>
+                                    <td class="text-right">Units String</td>
+                                    <td>{{ synset.unitsstr }}</td>
+                                </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -49,9 +53,52 @@
             <div class="col-sm-7">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <i class="fa fa-bar-chart-o fa-fw"></i> Synset History
+                        <i class="fa fa-th-list"></i> Synset History
                     </div>
                     <div class="panel-body">
+                        {% if synset_history.rowcount == 0 %}
+                            <h5 class="text-center">No synset history found</h5>
+                        {% else %}
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-condensed table-hover table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th class="text-center">Date</th>
+                                        <th class="text-center">User</th>
+                                        <th class="text-center">Operation</th>
+                                        <th class="text-center">Definition</th>
+                                        <th class="text-center">Comment</th>
+                                        <th class="text-center">Abstract</th>
+                                        <th class="text-center">Owner</th>
+                                        <th class="text-center">Units String</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for s in synset_history %}
+                                        <tr>
+                                            <td>
+                                                <time class="short-date"
+                                                      data-datetime="{{ s[0] }}">{{ s[0] }}</time>
+                                            </td>
+                                            <td>{{ s[1] }}</td>
+                                            <td>{% if s[2]=='created' %}
+                                                <span class="label label-success">Created</span>
+                                            {% elif s[2]=='removed' %}
+                                                <span class="label label-danger">Removed</span>
+                                            {% elif s[2]=='modified' %}
+                                                <span class="label label-info">Modified</span>
+                                            {% endif %}</td>
+                                            <td>{{ s[3] }}</td>
+                                            <td>{{ s[4] }}</td>
+                                            <td>{{ s[5] }}</td>
+                                            <td>{{ s[6] }}</td>
+                                            <td>{{ s[7] }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -60,27 +107,68 @@
             <div class="col-sm-5">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <i class="fa fa-bar-chart-o fa-fw"></i> Senses
+                        <i class="fa fa-object-group"></i> Senses
                     </div>
                     <div class="panel-body">
-                        <div class="list-group">
+                        {% if senses.rowcount == 0 %}
+                            <h5 class="text-center">Empty synset</h5>
+                        {% else %}
+                            <div class="list-group">
                                 {% for s in senses %}
-                                <a href="{{ url_for('sense.sense_by_id', id=s[0]) }}" class="list-group-item">
-                                    {{  s[1] }}
-                                    <span class="pull-right text-muted small"><em>{{ s[2] }}</em>
+                                    <a href="{{ url_for('sense.sense_by_id', id=s[0]) }}" class="list-group-item">
+                                        {{ s[1] }}
+                                        <span class="pull-right text-muted small"><em>{{ s[2] }}</em>
                                     </span>
-                                </a>
-                            {% endfor %}
-                        </div>
+                                    </a>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
             <div class="col-sm-7">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <i class="fa fa-bar-chart-o fa-fw"></i> Senses History
+                        <i class="fa fa-object-group"></i> Senses History
                     </div>
                     <div class="panel-body">
+                        {% if senses_history.rowcount == 0 %}
+                            <h5 class="text-center">No sense history found</h5>
+                        {% else %}
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-condensed table-hover table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th class="text-center">Date</th>
+                                        <th class="text-center">User</th>
+                                        <th class="text-center">Operation</th>
+                                        <th class="text-center">Sense</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for s in senses_history %}
+                                        <tr>
+                                            <td>
+                                                <time class="short-date"
+                                                      data-datetime="{{ s[0] }}">{{ s[0] }}</time>
+                                            </td>
+                                            <td>{{ s[1] }}</td>
+                                            <td>{% if s[2]=='attached sense' %}
+                                                <span class="label label-success">Attached Sense</span>
+                                            {% elif s[2]=='detached sense' %}
+                                                <span class="label label-danger">Detached Sense</span>
+                                            {% endif %}</td>
+                                            <td>
+                                                {% if s[3] is not none %}
+                                                    <a href="{{ url_for('sense.sense_by_id', id=s[3]) }}"> {{ s[4] }}</a>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -89,80 +177,168 @@
             <div class="col-sm-5">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <i class="fa fa-bar-chart-o fa-fw"></i> Incoming Relations
+                        <i class="fa fa-sign-in"></i> Incoming Relations
                     </div>
                     <div class="panel-body">
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-condensed table-hover table-striped">
-                                <thead>
-                                <tr>
-                                    <th class="text-center">Relation</th>
-                                    <th class="text-center">Synset</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {% for r in incoming_rel %}
+                        {% if incoming_rel.rowcount == 0 %}
+                            <h5 class="text-center">No incoming relations found</h5>
+                        {% else %}
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-condensed table-hover table-striped">
+                                    <thead>
                                     <tr>
-                                        <td>{{ r[0] }}</td>
-                                        <td>
-                                            <a href="{{ url_for('synset.synset_by_id', id=r[1]) }}"> {{ r[2] }}</a>
-                                        </td>
+                                        <th class="text-center">Relation</th>
+                                        <th class="text-center">Synset</th>
                                     </tr>
-                                {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
+                                    </thead>
+                                    <tbody>
+                                    {% for r in incoming_rel %}
+                                        <tr>
+                                            <td>{{ r[0] }}</td>
+                                            <td>
+                                                <a href="{{ url_for('synset.synset_by_id', id=r[1]) }}"> {{ r[2] }}</a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
             <div class="col-sm-7">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <i class="fa fa-bar-chart-o fa-fw"></i> Incoming Relations History
-                        </div>
-                        <div class="panel-body">
-                        </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="fa fa-sign-in"></i> Incoming Relations History
                     </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-5">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <i class="fa fa-bar-chart-o fa-fw"></i> Outgoing Relations
-                        </div>
-                        <div class="panel-body">
-                             <table class="table table-bordered table-condensed table-hover table-striped">
-                                <thead>
-                                <tr>
-                                    <th class="text-center">Relation</th>
-                                    <th class="text-center">Synset</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {% for r in outgoing_rel %}
+                    <div class="panel-body">
+                        {% if not incoming_history %}
+                            <h5 class="text-center">No incoming relations history found</h5>
+                        {% else %}
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-condensed table-hover table-striped">
+                                    <thead>
                                     <tr>
-                                        <td>{{ r[0] }}</td>
-                                        <td>
-                                            <a href="{{ url_for('synset.synset_by_id', id=r[1]) }}"> {{ r[2] }}</a>
-                                        </td>
+                                        <th class="text-center">Date</th>
+                                        <th class="text-center">User</th>
+                                        <th class="text-center">Operation</th>
+                                        <th class="text-center">Relation</th>
+                                        <th class="text-center">Synset</th>
                                     </tr>
-                                {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-7">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <i class="fa fa-bar-chart-o fa-fw"></i> Outgoing Relations History
-                        </div>
-                        <div class="panel-body">
-                        </div>
+                                    </thead>
+                                    <tbody>
+                                    {% for r in incoming_history %}
+                                        <tr>
+                                            <td>
+                                                <time class="short-date"
+                                                      data-datetime="{{ r.datetime }}">{{ r.datetime }}</time>
+                                            </td>
+                                            <td>{{ r.user }}</td>
+                                            <td>{% if r.operation=='created' %}
+                                                <span class="label label-success">Created</span>
+                                            {% elif r.operation=='removed' %}
+                                                <span class="label label-danger">Removed</span>
+                                            {% endif %}</td>
+                                            <td>{{ r.relation_name }}</td>
+                                            <td>
+                                                {% if r.source_id is not none %}
+                                                    <a href="{{ url_for('synset.synset_by_id', id=r.source_id) }}"> {{ r.source_unitstr }}</a>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-sm-5">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="fa fa-sign-out"></i> Outgoing Relations
+                    </div>
+                    <div class="panel-body">
+                        {% if outgoing_rel.rowcount == 0 %}
+                            <h5 class="text-center">No outgoing relations found</h5>
+                        {% else %}
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-condensed table-hover table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th class="text-center">Relation</th>
+                                        <th class="text-center">Synset</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for r in outgoing_rel %}
+                                        <tr>
+                                            <td>{{ r[0] }}</td>
+                                            <td>
+                                                <a href="{{ url_for('synset.synset_by_id', id=r[1]) }}"> {{ r[2] }}</a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-7">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="fa fa-sign-out"></i> Outgoing Relations History
+                    </div>
+                    <div class="panel-body">
+                        {% if not outgoing_history %}
+                            <h5 class="text-center">No outgoing relations history found</h5>
+                        {% else %}
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-condensed table-hover table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th class="text-center">Date</th>
+                                        <th class="text-center">User</th>
+                                        <th class="text-center">Operation</th>
+                                        <th class="text-center">Relation</th>
+                                        <th class="text-center">Synset</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for r in outgoing_history %}
+                                        <tr>
+                                            <td>
+                                                <time class="short-date"
+                                                      data-datetime="{{ r.datetime }}">{{ r.datetime }}</time>
+                                            </td>
+                                            <td>{{ r.user }}</td>
+                                            <td>{% if r.operation=='created' %}
+                                                <span class="label label-success">Created</span>
+                                            {% elif r.operation=='removed' %}
+                                                <span class="label label-danger">Removed</span>
+                                            {% endif %}</td>
+                                            <td>{{ r.relation_name }}</td>
+                                            <td>
+                                                {% if r.target_id is not none %}
+                                                    <a href="{{ url_for('synset.synset_by_id', id=r.target_id) }}"> {{ r.target_unitstr }}</a>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     </div>
 {% endblock %}

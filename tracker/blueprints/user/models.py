@@ -4,13 +4,61 @@ from collections import OrderedDict
 from hashlib import md5
 
 from flask import current_app
-from sqlalchemy import or_
+from sqlalchemy import or_, text
 from flask_login import UserMixin
 
 from itsdangerous import URLSafeTimedSerializer, \
     TimedJSONWebSignatureSerializer
 
 from tracker.extensions import db
+
+
+def user_activity_between_dates(from_date, to_date):
+    sql = text('SELECT tr.user, \
+        count(case when tr.inserted = 1 and tr.`table` = "lexicalunit" then  1 END) sense_created,\
+        count(case when tr.inserted = 0 and tr.deleted = 0 and tr.`table` = "lexicalunit" then  1 END) sense_modified,\
+        count(case when tr.deleted = 0 and tr.`table` = "lexicalunit" then  1 END) sense_removed, \
+        count(case when tr.inserted = 1 and tr.`table` = "lexicalrelation" then  1 END) senserelation_created,\
+        count(case when tr.deleted = 0 and tr.`table` = "lexicalrelation" then  1 END) senserelation_removed, \
+        count(case when tr.inserted = 1 and tr.`table` = "synset" then  1 END) synset_created, \
+        count(case when tr.inserted = 0 and tr.deleted = 0 and tr.`table` = "synset" then  1 END) synset_modified,\
+        count(case when tr.deleted = 0 and tr.`table` = "synset" then  1 END) synset_removed,\
+        count(case when tr.inserted = 1 and tr.`table` = "synsetrelation" then  1 END) synsetrelation_created,\
+        count(case when tr.deleted = 0 and tr.`table` = "synsetrelation" then  1 END) synsetrelation_removed\
+        FROM tracker tr WHERE DATE(tr.datetime) >= :from_date AND DATE(tr.datetime) <= :to_date GROUP BY tr.user')
+    return db.engine.execute(sql, {'from_date': from_date, 'to_date': to_date})
+
+
+def user_activity_month(month, year):
+    sql = text('SELECT tr.user, \
+        count(case when tr.inserted = 1 and tr.`table` = "lexicalunit" then  1 END) sense_created,\
+        count(case when tr.inserted = 0 and tr.deleted = 0 and tr.`table` = "lexicalunit" then  1 END) sense_modified,\
+        count(case when tr.deleted = 0 and tr.`table` = "lexicalunit" then  1 END) sense_removed, \
+        count(case when tr.inserted = 1 and tr.`table` = "lexicalrelation" then  1 END) senserelation_created,\
+        count(case when tr.deleted = 0 and tr.`table` = "lexicalrelation" then  1 END) senserelation_removed, \
+        count(case when tr.inserted = 1 and tr.`table` = "synset" then  1 END) synset_created, \
+        count(case when tr.inserted = 0 and tr.deleted = 0 and tr.`table` = "synset" then  1 END) synset_modified,\
+        count(case when tr.deleted = 0 and tr.`table` = "synset" then  1 END) synset_removed,\
+        count(case when tr.inserted = 1 and tr.`table` = "synsetrelation" then  1 END) synsetrelation_created,\
+        count(case when tr.deleted = 0 and tr.`table` = "synsetrelation" then  1 END) synsetrelation_removed\
+        FROM tracker tr WHERE YEAR(tr.datetime) = :n_year AND MONTH(tr.datetime) = :n_month GROUP BY tr.user')
+    return db.engine.execute(sql, {'n_year': year, 'n_month': month})
+
+
+def user_activity_day(now_date):
+    sql = text('SELECT tr.user, \
+        count(case when tr.inserted = 1 and tr.`table` = "lexicalunit" then  1 END) sense_created,\
+        count(case when tr.inserted = 0 and tr.deleted = 0 and tr.`table` = "lexicalunit" then  1 END) sense_modified,\
+        count(case when tr.deleted = 0 and tr.`table` = "lexicalunit" then  1 END) sense_removed, \
+        count(case when tr.inserted = 1 and tr.`table` = "lexicalrelation" then  1 END) senserelation_created,\
+        count(case when tr.deleted = 0 and tr.`table` = "lexicalrelation" then  1 END) senserelation_removed, \
+        count(case when tr.inserted = 1 and tr.`table` = "synset" then  1 END) synset_created, \
+        count(case when tr.inserted = 0 and tr.deleted = 0 and tr.`table` = "synset" then  1 END) synset_modified,\
+        count(case when tr.deleted = 0 and tr.`table` = "synset" then  1 END) synset_removed,\
+        count(case when tr.inserted = 1 and tr.`table` = "synsetrelation" then  1 END) synsetrelation_created,\
+        count(case when tr.deleted = 0 and tr.`table` = "synsetrelation" then  1 END) synsetrelation_removed\
+        FROM tracker tr WHERE DATE(tr.datetime) = :now_date')
+    return db.engine.execute(sql, {'now_date': now_date})
 
 
 class User(UserMixin, db.Model):

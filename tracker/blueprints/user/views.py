@@ -100,6 +100,37 @@ def users_activity():
     else:
         stats = user_activity_day(strftime("%Y-%m-%d", gmtime()))
 
+    items, total = calculate_stats(stats)
+
     return render_template('user/users-activity.html',
                            form=search_from,
-                           stats=stats)
+                           stats=items,
+                           total=total)
+
+
+def calculate_stats(stats):
+    items = []
+    for s in stats:
+        row = dict()
+        total = 0
+        for i in range(0, len(s)):
+
+            if i == 0:
+                if s[i] is None:
+                    row['user'] = 'None'
+                else:
+                    row['user'] = s[i]
+            else:
+                row[str(i)] = s[i]
+                total = total + s[i]
+        row['total'] = total
+        items.append(row)
+
+    total = dict()
+
+    if len(items) > 0:
+        for i in range(1, 11):
+            total[str(i)] = sum(item[str(i)] for item in items)
+        total['total'] = sum(item['total'] for item in items)
+
+    return items, total

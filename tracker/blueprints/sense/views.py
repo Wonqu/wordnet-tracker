@@ -22,6 +22,7 @@ class SenseistoryForm(object):
 def senses_history(page):
 
     filter_form = SenseHistoryForm()
+    users = get_user_name_list()
 
     paginated_senses = TrackerSenseHistory.query \
         .filter(TrackerSenseHistory.search_by_form_filter(request.args.get('date_from', ''),
@@ -38,6 +39,7 @@ def senses_history(page):
 
     return render_template('sense/sense-history.html',
                            form=filter_form,
+                           users=users,
                            sense_history=pagination)
 
 

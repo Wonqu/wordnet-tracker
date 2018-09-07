@@ -43,7 +43,7 @@
                 {% endcall %}
             </div>
         </div>
-        {% if stats.rowcount == 0 %}
+        {% if stats|length == 0 %}
             <h3>No results found</h3>
             <p>Try limiting or removing your search terms.</p>
         {% else %}
@@ -74,36 +74,35 @@
                             </tr>
                             </thead>
                             <tbody>
-                            {% for s in stats %}
+                                {% for s in stats %}
                                 <tr>
-                                    <td>{{ s[0] }}</td>
-                                    <td class="bg-success">{{ s[1] }}</td>
-                                    <td class="bg-info">{{ s[2] }}</td>
-                                    <td class="bg-danger">{{ s[3] }}</td>
-                                    <td class="bg-success">{{ s[4] }}</td>
-                                    <td class="bg-danger"> {{ s[5] }}</td>
-                                    <td class="bg-success">{{ s[6] }}</td>
-                                    <td class="bg-info">{{ s[7] }}</td>
-                                    <td class="bg-danger">{{ s[8] }}</td>
-                                    <td class="bg-success">{{ s[9] }}</td>
-                                    <td class="bg-danger">{{ s[10] }}</td>
-                                    <td>{{ s[1:11]|sum }}</td>
+                                    <td>{{ s['user'] }}</td>
+                                    <td class="bg-success text-right">{{ s['1'] }}</td>
+                                    <td class="bg-info text-right">{{ s['2'] }}</td>
+                                    <td class="bg-danger text-right">{{ s['3'] }}</td>
+                                    <td class="bg-success text-right">{{ s['4'] }}</td>
+                                    <td class="bg-danger text-right"> {{ s['5'] }}</td>
+                                    <td class="bg-success text-right">{{ s['6'] }}</td>
+                                    <td class="bg-info text-right">{{ s['7'] }}</td>
+                                    <td class="bg-danger text-right">{{ s['8'] }}</td>
+                                    <td class="bg-success text-right">{{ s['9'] }}</td>
+                                    <td class="bg-danger text-right">{{ s['10'] }}</td>
+                                    <td class="text-right text-right"><b>{{ s['total'] }}</b></td>
                                 </tr>
-                            {% endfor %}
+                                    {% endfor %}
                             <tr>
-                                <td><b>Total</b></td>
-                                <td>
-                                </td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
+                                <td class="text-right"><b>Total</b></td>
+                                <td class="text-right"><b>{{ total['1'] }}</b></td>
+                                <td class="text-right"><b>{{ total['2'] }}</b></td>
+                                <td class="text-right"><b>{{ total['3'] }}</b></td>
+                                <td class="text-right"><b>{{ total['4'] }}</b></td>
+                                <td class="text-right"><b>{{ total['5'] }}</b></td>
+                                <td class="text-right"><b>{{ total['6'] }}</b></td>
+                                <td class="text-right"><b>{{ total['7'] }}</b></td>
+                                <td class="text-right"><b>{{ total['8'] }}</b></td>
+                                <td class="text-right"><b>{{ total['9'] }}</b></td>
+                                <td class="text-right"><b>{{ total['10'] }}</b></td>
+                                <td class="text-right"><b>{{ total['total'] }}</b></td>
                             </tr>
                             </tbody>
                         </table>

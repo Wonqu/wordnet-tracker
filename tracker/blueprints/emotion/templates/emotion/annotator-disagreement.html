@@ -1,0 +1,89 @@
+{% extends 'layouts/app.html' %}
+{% import 'macros/items.html' as items %}
+{% import 'macros/form.html' as f with context %}
+
+{% block title %}Emotions{% endblock %}
+
+{% block content %}
+    <div id="page-wrapper">
+        <div class="row">
+            <div class="col-sm-12">
+                <h2 class="page-header"><i class="fa fa-deviantart fa-fw"></i> Annotator Disagreement</h2>
+            </div>
+        </div>
+        <div class="row margin-bottom-15">
+            <div class="col-sm-12">
+                {% call f.form_tag('emotion.annotator_disagreement', css_class='form-inline', method='get') %}
+                    <div class="form-group form-group-sm">
+                        <select class="form-control" id="users" name="user">
+                            {% if request.args.get('user', '') == '' %}
+                                <option value="" disabled selected>Select User</option>
+                            {% else %}
+                                <option value="">Select User</option>
+                            {% endif %}
+                            {% for u in users %}
+                                {% if u is not none and u != '' %}
+                                    <option {% if request.args.get('user', '') == u %}
+                                        selected
+                                    {% endif %}>{{ u }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <input class="form-control" id="sense_id" name="sense_id" placeholder="Sense ID" type="text"
+                               value="{{ request.args.get('sense_id', '') }}">
+                    </div>
+                    <button type="submit" class="btn btn-default btn-sm"><i class="fa fa-search"></i> Search</button>
+                {% endcall %}
+            </div>
+        </div>
+        {% if emotions.total == 0 %}
+            <h3>No results found</h3>
+            <p>Try limiting or removing your search terms.</p>
+        {% else %}
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-condensed table-hover table-striped">
+                            <thead>
+                             <tr>
+                                <th class="col-header">Sense</th>
+                                <th class="col-header">Status</th>
+                                <th class="col-header">First Annotator</th>
+                                <th scope="col" class="col-header">Markedness By First Annotator</th>
+                                <th scope="col" class="col-header">Markedness By Second Annotator</th>
+                                <th scope="col" class="col-header">Second Annotators</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for e in emotions.items %}
+                            <td><a href="{{ url_for('sense.sense_by_id', id=e.sense_id)  }}">{{ e.lemma }}</a></td>
+                            <td>
+                                {{ e.status }}
+                            </td>
+                            <td>{{ e.owner0 }}</td>
+                            <td class="text-right">{{ e.markedness0 }}</td>
+                            <td>{{ e.markedness1 }}</td>
+                            <td>{{ e.owner1 }}</td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.table-responsive -->
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="pull-right">
+                        {{ items.paginate(emotions) }}
+                    </div>
+                </div>
+            </div>
+            <!-- /.row -->
+            </div>
+        {% endif %}
+    </div>
+
+{% endblock %}

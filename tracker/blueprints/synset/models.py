@@ -240,7 +240,22 @@ def get_user_name_list():
         result = db.engine.execute(sql)
         for row in result:
             user_names.append(row[0])
-            cache.set('user-names', user_names, timeout=10 * 60)
+            cache.set('user-names', user_names, timeout=30 * 60)
+
+    return user_names
+
+
+def get_user_emotion_list():
+    user_names = cache.get('user-emotions-names')
+
+    if user_names is None:
+        user_names = []
+
+        sql = text('select distinct owner from emotion')
+        result = db.engine.execute(sql)
+        for row in result:
+            user_names.append(row[0])
+            cache.set('user-emotions-names', user_names, timeout=30 * 60)
 
     return user_names
 

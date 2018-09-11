@@ -201,7 +201,7 @@ class TrackerSenseRelationsHistory(db.Model):
         if date_to is not '':
             search_chain.append(TrackerSenseRelationsHistory.datetime <= date_to)
         if sense_id is not '':
-            search_chain.append(TrackerSenseRelationsHistory.source_id == sense_id)
+            search_chain.append(or_(TrackerSenseRelationsHistory.source_id == sense_id))
         if user is not '':
             search_chain.append(TrackerSenseRelationsHistory.user == user)
         if relation_type is not '':
@@ -273,7 +273,7 @@ class TrackerSenseHistory(db.Model):
         return field, direction
 
     @classmethod
-    def search_by_form_filter(cls, date_from, date_to, sense_id, user):
+    def search_by_form_filter(cls, date_from, date_to, sense_id, user, pos):
         """
         Search a resource by 1 or more fields.
 
@@ -291,4 +291,13 @@ class TrackerSenseHistory(db.Model):
             search_chain.append(TrackerSenseHistory.key_id == sense_id)
         if user is not '':
             search_chain.append(TrackerSenseHistory.user == user)
+        if pos is not '':
+            if pos == 1:
+                search_chain.append(TrackerSenseHistory.u1_pos.in_(1, 5))
+            elif pos == 2:
+                search_chain.append(TrackerSenseHistory.u1_pos.in_(2, 6))
+            elif pos == 3:
+                search_chain.append(TrackerSenseHistory.u1_pos.in_(3, 7))
+            elif pos == 4:
+                search_chain.append(TrackerSenseHistory.u1_pos.in_(4, 8))
         return and_(*search_chain)

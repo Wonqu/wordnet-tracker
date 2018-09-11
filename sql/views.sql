@@ -91,3 +91,26 @@ LEFT JOIN tracker_lexicalunit tlu2 ON (tr2.tid = tlu2.tid)
 LEFT JOIN lexicalunit lu ON (lu.ID = tlu.ID)
 WHERE tr.data_before_change IS NULL AND tr.`table` = 'lexicalunit'
 ORDER BY tr.datetime desc
+
+CREATE VIEW view_emotion_disagreement AS
+SELECT l.ID as sense_id, concat(l.lemma,' ', l.variant) as lemma, l.status,
+          substr(innerCnt.markedness, 1, locate(';', innerCnt.markedness) -1) as markedness0,
+          substr(innerCnt.markedness FROM locate(';', innerCnt.markedness) + 1) as markedness1,
+          substr(innerCnt.owners, 1, locate(';', innerCnt.owners) -1) as owner0,
+          substr(innerCnt.owners FROM locate(';', innerCnt.owners) + 1) as owner1
+        FROM lexicalunit l JOIN
+        (SELECT count(e.id) as cnt,
+          e.lexicalunit_id as lexical_id,
+          group_concat(e.id SEPARATOR ';') as ids,
+          group_concat(e.owner SEPARATOR ';') as owners,
+          group_concat(e.super_anotation SEPARATOR ';') as super_anotation,
+          group_concat(e.markedness SEPARATOR ';') as markedness
+        FROM emotion e
+        GROUP BY e.lexicalunit_id
+        HAVING cnt = 2
+        AND markedness IS NOT NULL ) innerCnt
+        ON innerCnt.lexical_id = l.ID
+        WHERE substr(innerCnt.markedness, 1, locate(';', innerCnt.markedness) -1) NOT LIKE ''
+          AND  substr(innerCnt.markedness FROM locate(';', innerCnt.markedness) + 1) NOT LIKE ''
+          AND substr(innerCnt.markedness, 1, locate(';', innerCnt.markedness) -1) NOT LIKE
+              substr(innerCnt.markedness FROM locate(';', innerCnt.markedness) + 1)

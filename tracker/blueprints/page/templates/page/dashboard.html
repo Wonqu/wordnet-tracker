@@ -1,129 +1,128 @@
 {% extends 'layouts/app.html' %}
 
 {% block content %}
-   <div id="page-wrapper">
-            <div class="row">
-                <div class="col-lg-12">
-                    <h2 class="page-header"><i class="fa fa-dashboard fa-fw"></i> Dashboard</h2>
+    <div id="page-wrapper">
+        <div class="row">
+            <div class="col-lg-12">
+                <h2 class="page-header"><i class="fa fa-dashboard fa-fw"></i> Dashboard</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-3 col-md-6">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <i class="fa fa-sitemap fa-5x"></i>
+                            </div>
+                            <div class="col-xs-9 text-right">
+                                <div class="huge">{% if stats|length > 0 %}  {{ stats[0][0] }} {% else %} 0 {% endif %}</div>
+                                <div>New Synsets</div>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="{{ url_for('user.users_activity') }}">
+                        <div class="panel-footer">
+                            <span class="pull-left">View Details</span>
+                            <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                            <div class="clearfix"></div>
+                        </div>
+                    </a>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-lg-3 col-md-6">
-                    <div class="panel panel-primary">
-                        <div class="panel-heading">
-                            <div class="row">
-                                <div class="col-xs-3">
-                                    <i class="fa fa-sitemap fa-5x"></i>
-                                </div>
-                                <div class="col-xs-9 text-right">
-                                    <div class="huge">{%  if stats[0] =='' %}  {{  stats[0] }} {% else %} 0 {% endif %}</div>
-                                    <div>New Synsets Today!</div>
-                                </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="panel panel-green">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <i class="fa fa-refresh fa-5x"></i>
+                            </div>
+                            <div class="col-xs-9 text-right">
+                                <div class="huge">{% if stats|length > 0 %}  {{ stats[0][1] }} {% else %} 0 {% endif %}</div>
+                                <div>New Synset Relations</div>
                             </div>
                         </div>
-                        <a href="{{ url_for('user.users_activity') }}">
-                            <div class="panel-footer">
-                                <span class="pull-left">View Details</span>
-                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                                <div class="clearfix"></div>
-                            </div>
-                        </a>
                     </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="panel panel-green">
-                        <div class="panel-heading">
-                            <div class="row">
-                                <div class="col-xs-3">
-                                    <i class="fa fa-refresh fa-5x"></i>
-                                </div>
-                                <div class="col-xs-9 text-right">
-                                    <div class="huge">{%  if stats[1] =='' %}  {{  stats[1] }} {% else %} 0 {% endif %} </div>
-                                    <div>New Synset Relations Today!</div>
-                                </div>
-                            </div>
+                    <a href="{{ url_for('user.users_activity') }}">
+                        <div class="panel-footer">
+                            <span class="pull-left">View Details</span>
+                            <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                            <div class="clearfix"></div>
                         </div>
-                        <a href="{{ url_for('user.users_activity') }}">
-                            <div class="panel-footer">
-                                <span class="pull-left">View Details</span>
-                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                                <div class="clearfix"></div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="panel panel-yellow">
-                        <div class="panel-heading">
-                            <div class="row">
-                                <div class="col-xs-3">
-                                    <i class="fa fa-object-group fa-5x"></i>
-                                </div>
-                                <div class="col-xs-9 text-right">
-                                    <div class="huge">{%  if stats[2] =='' %}  {{  stats[2] }} {% else %} 0 {% endif %}</div>
-                                    <div>New Senses Today!</div>
-                                </div>
-                            </div>
-                        </div>
-                        <a href="{{ url_for('user.users_activity') }}">
-                            <div class="panel-footer">
-                                <span class="pull-left">View Details</span>
-                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                                <div class="clearfix"></div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="panel panel-red">
-                        <div class="panel-heading">
-                            <div class="row">
-                                <div class="col-xs-3">
-                                    <i class="fa fa-retweet fa-5x"></i>
-                                </div>
-                                <div class="col-xs-9 text-right">
-                                    <div class="huge">{%  if stats[3] =='' %}  {{  stats[3] }} {% else %} 0 {% endif %}</div>
-                                    <div>Sense Relations Today!</div>
-                                </div>
-                            </div>
-                        </div>
-                        <a href="{{ url_for('user.users_activity') }}">
-                            <div class="panel-footer">
-                                <span class="pull-left">View Details</span>
-                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                                <div class="clearfix"></div>
-                            </div>
-                        </a>
-                    </div>
+                    </a>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <i class="fa fa-bar-chart-o fa-fw"></i> Today's Users Activity
+            <div class="col-lg-3 col-md-6">
+                <div class="panel panel-yellow">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <i class="fa fa-object-group fa-5x"></i>
+                            </div>
+                            <div class="col-xs-9 text-right">
+                                <div class="huge">{% if stats|length > 0 %}  {{ stats[0][2] }} {% else %} 0 {% endif %}</div>
+                                <div>New Senses</div>
+                            </div>
                         </div>
-                        <div class="panel-body">
-                            <div class=row">
-                                <div class="col-sm-12 text-center">
-                                    <div id="user-activity-today"></div>
-                                </div>
+                    </div>
+                    <a href="{{ url_for('user.users_activity') }}">
+                        <div class="panel-footer">
+                            <span class="pull-left">View Details</span>
+                            <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                            <div class="clearfix"></div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="panel panel-red">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <i class="fa fa-retweet fa-5x"></i>
+                            </div>
+                            <div class="col-xs-9 text-right">
+                                <div class="huge">{% if stats|length > 0 %}  {{ stats[0][3] }} {% else %} 0 {% endif %}</div>
+                                <div>New Sense Relations</div>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="{{ url_for('user.users_activity') }}">
+                        <div class="panel-footer">
+                            <span class="pull-left">View Details</span>
+                            <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                            <div class="clearfix"></div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="fa fa-bar-chart-o fa-fw"></i> Today's Users Activity
+                    </div>
+                    <div class="panel-body">
+                        <div class=row">
+                            <h5 id="d_ylabel-axis" class="rotate">Number of operations</h5>
+                            <div class="col-sm-12 text-center">
+                                <div id="user-activity-today"  user-data=""></div>
+                                <h5 id="d_xlabel-axis">Hour</h5>
+                                <div id="no-user-activity"><h4>No user activity found</h4></div>
+                                <img id="user-activity-today-spinner" src="{{ url_for('static', filename='images/spinner.gif') }}"
+                                     class="spinner"
+                                     width="16" height="11" alt="Spinner"/>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
     <script>
-    $.ajax({
-        type: 'GET',
-        url: '/api/users/activity',
-        dataType: "json",
-        async: true,
-        contentType: "application/json; charset=utf-8",
-        success: function(json){
-            Morris.Line($.parseJSON(json))
-        }
-    })
+        $(document).ready(function(){
+            user_activity_now();
+        });
     </script>
 {% endblock %}

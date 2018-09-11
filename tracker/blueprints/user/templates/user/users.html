@@ -45,7 +45,7 @@
                             {% for user in users.items %}
                                 <tr>
                                     <td>{{ user.id }}</td>
-                                    <td>{{ user.fullname() }}</td>
+                                    <td><a href="{{ url_for('user.profile', q=user.fullname()) }}">{{ user.fullname() }}</a></td>
                                     <td>{{ user.email }}</td>
                                     <td>{{ user.role }}</td>
                                 </tr>

@@ -9,14 +9,14 @@ SERVER_NAME = '156.17.135.55:8080'
 REMEMBER_COOKIE_DURATION = timedelta(minutes=30)
 SECRET_KEY = '!$flhgsdf324NO%$#SOET!$!'
 
-
-# SQLAlchemy.
-db_uri = 'mysql+pymysql://wordnet:root@192.168.1.106:3306/wordnet_work'
+db_uri = 'mysql+pymysql://wordnet:password@localhost:3306/wordnet_work'
 SQLALCHEMY_DATABASE_URI = db_uri
 SQLALCHEMY_BINDS = {
-    'users':        'mysql+pymysql://wordnet:root@192.168.1.106:3306/wordnet',
+    'users':        'mysql+pymysql://wordnet:root@localhost:3306/wordnet',
 }
+
 SQLALCHEMY_TRACK_MODIFICATIONS = False
+SQLALCHEMY_ECHO = False
 
 # Cache
 MEMCACHED_SERVERS = 'memcached:11211'

@@ -6,15 +6,141 @@
     <div id="page-wrapper">
         <div class="row">
             <div class="col-lg-12">
-                <h2 class="page-header"><i class="fa fa-user fa-fw"></i> {{ current_user.fullname() }}</h2>
+                <h2 class="page-header"><i class="fa fa-users fa-fw"></i> Users</h2>
             </div>
         </div>
         <div class="row">
-            <div class="col-md-5">
-                <h2>Settings</h2>
-                <div class="list-group">
-                    <h4 class="text-muted margin-bottom">{{ current_user.email }}</h4>
+            <div class="col-sm-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="fa fa-user"></i> User Profile
+                    </div>
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <tbody>
+                                {% if user is not none %}
+                                    <tr>
+                                        <td class="col-sm-3 text-right">Email</td>
+                                        <td>{{ user.email }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-right">Full Name</td>
+                                        <td>{{ user.fullname() }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-right">Role</td>
+                                        <td>{{ user.role }}</td>
+                                    </tr>
+                                {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
-
             </div>
+            <div class="col-sm-8">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="fa fa-table"></i> User Activity This Month
+                    </div>
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-condensed table-hover table-striped">
+                                <thead>
+                                <tr>
+                                    <th colspan="3" class="text-center" scope="colgroup">Sense</th>
+                                    <th colspan="2" class="text-center" scope="colgroup">Sense Relation</th>
+                                    <th colspan="3" class="text-center" scope="colgroup">Synset</th>
+                                    <th colspan="2" class="text-center" scope="colgroup">Synset Relation</th>
+                                    <th rowspan="2" class="text-center" scope="colgroup">Total</th>
+                                </tr>
+                                <tr>
+                                    <th class="col-header bg-success">Created</th>
+                                    <th class="col-header bg-info">Modified</th>
+                                    <th class="col-header bg-danger">Removed</th>
+                                    <th class="col-header bg-success">Created</th>
+                                    <th class="col-header bg-danger">Removed</th>
+                                    <th class="col-header bg-success">Created</th>
+                                    <th class="col-header bg-info">Modified</th>
+                                    <th class="col-header bg-danger">Removed</th>
+                                    <th class="col-header bg-success">Created</th>
+                                    <th class="col-header bg-danger">Removed</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for s in stats %}
+                                    <tr>
+                                        <td class="bg-success text-right">{{ s['1'] }}</td>
+                                        <td class="bg-info text-right">{{ s['2'] }}</td>
+                                        <td class="bg-danger text-right">{{ s['3'] }}</td>
+                                        <td class="bg-success text-right">{{ s['4'] }}</td>
+                                        <td class="bg-danger text-right"> {{ s['5'] }}</td>
+                                        <td class="bg-success text-right">{{ s['6'] }}</td>
+                                        <td class="bg-info text-right">{{ s['7'] }}</td>
+                                        <td class="bg-danger text-right">{{ s['8'] }}</td>
+                                        <td class="bg-success text-right">{{ s['9'] }}</td>
+                                        <td class="bg-danger text-right">{{ s['10'] }}</td>
+                                        <td class="text-right text-right"><b>{{ s['total'] }}</b></td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="fa fa-bar-chart-o fa-fw"></i> Today's User Activity
+                    </div>
+                    <div class="panel-body">
+                        <div class=row">
+                            <h5 id="d_ylabel-axis" class="rotate">Number of operations</h5>
+                            <div class="col-sm-12 text-center">
+                                <div id="user-activity-today" user-data="{{ request.args.get('q', '') }}"></div>
+                                <h5 id="d_xlabel-axis">Hour</h5>
+                                <div id="no-user-activity"><h4>No user activity found</h4></div>
+                                <img id="user-activity-today-spinner"
+                                     src="{{ url_for('static', filename='images/spinner.gif') }}"
+                                     class="spinner"
+                                     width="16" height="11" alt="Spinner"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <i class="fa fa-bar-chart-o fa-fw"></i> Monthly User Activity
+                    </div>
+                    <div class="panel-body">
+                        <div class=row">
+                            <h5 id="m_ylabel-axis" class="rotate">Number of operations</h5>
+                            <div class="col-sm-12 text-center">
+                                <div id="user-activity-monthly" user-data="{{ request.args.get('q', '') }}"></div>
+                                <h5 id="m_xlabel-axis">Day</h5>
+                                <div id="m_no-user-activity"><h4>No user activity found</h4></div>
+                                <img id="user-activity-monthly-spinner"
+                                     src="{{ url_for('static', filename='images/spinner.gif') }}"
+                                     class="spinner"
+                                     width="16" height="11" alt="Spinner"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            $(document).ready(function () {
+                user_activity_now();
+                user_activity_monthly();
+            });
+        </script>
 {% endblock %}

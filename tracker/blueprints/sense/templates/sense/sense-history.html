@@ -55,6 +55,19 @@
                             {% endfor %}
                         </select>
                     </div>
+                     <div class="form-group form-group-sm">
+                        <select class="form-control" id="pos" name="pos">
+                            {% if request.args.get('pos', '') == '' %}
+                                <option value="" disabled selected>Select Part Of Speech</option>
+                            {% else %}
+                                <option value="">Select Part Of Speech</option>
+                            {% endif %}
+                            <option value="1" {% if request.args.get('pos', '') == 1 %}selected{% endif %}>Verb</option>
+                            <option value="2" {% if request.args.get('pos', '') == 2 %}selected{% endif %}>Noun</option>
+                            <option value="3" {% if request.args.get('pos', '') == 3 %}selected{% endif %}>Adverb</option>
+                            <option value="4" {% if request.args.get('pos', '') == 4 %}selected{% endif %}>Adjective</option>
+                        </select>
+                    </div>
                     <div class="form-group form-group-sm">
                         <input class="form-control" id="sense_id" name="sense_id" placeholder="Sense ID" type="text"
                                value="{{ request.args.get('sense_id', '') }}">

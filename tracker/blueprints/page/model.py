@@ -15,8 +15,23 @@ def find_created_items_today():
     return db.engine.execute(sql, {'now': strftime("%Y-%m-%d", gmtime())})
 
 
-def find_user_activity_now(today):
-    sql = text('SELECT tr.user, TIME_FORMAT(tr.datetime, "%H:00"), count(tr.id) \
+def find_user_activity_now(today, user):
+    if user != '':
+        sql = text('SELECT tr.user, TIME_FORMAT(tr.datetime, "%H:00"), count(tr.id) \
+                        FROM tracker tr WHERE DATE(tr.datetime) = :today AND tr.user=:user_name \
+                        GROUP BY tr.user, hour( tr.datetime ) order by  hour( tr.datetime )')
+        return db.engine.execute(sql, {'today': today, 'user_name': user})
+    else:
+        sql = text('SELECT tr.user, TIME_FORMAT(tr.datetime, "%H:00"), count(tr.id) \
                 FROM tracker tr WHERE DATE(tr.datetime) = :today \
                 GROUP BY tr.user, hour( tr.datetime ) order by  hour( tr.datetime )')
-    return db.engine.execute(sql, {'today': today})
+        return db.engine.execute(sql, {'today': today})
+
+
+def find_user_activity_month(year, month, user):
+
+        sql = text('SELECT tr.user, DATE_FORMAT(tr.datetime, "%d"), count(tr.id) \
+                        FROM tracker tr WHERE YEAR(tr.datetime) = :yr AND MONTH(tr.datetime)=:mnth AND tr.user=:user_name \
+                        GROUP BY tr.user, day( tr.datetime ) order by day( tr.datetime )')
+
+        return db.engine.execute(sql, {'yr': year,'mnth': month, 'user_name': user})

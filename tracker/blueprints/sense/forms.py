@@ -15,4 +15,5 @@ class SenseHistoryForm(FlaskForm):
     date_to = DateField("date to", format="%Y-%m-%d")
     sense_id = IntegerField("sense_id")
     user = TextField("user")
+    pos = IntegerField("pos")
 

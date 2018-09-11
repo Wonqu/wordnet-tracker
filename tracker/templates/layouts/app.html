@@ -62,7 +62,7 @@
                         </ul>
                     </li>
                     <li>
-                        <a href="tables.html"><i class="fa fa-object-group fa-fw"></i> Senses</a>
+                        <a href="#"><i class="fa fa-object-group fa-fw"></i> Senses</a>
                         <ul class="nav nav-second-level">
                             <li>
                                 <a href="{{ url_for('sense.senses_history') }}">Sense History</a>
@@ -73,10 +73,16 @@
                         </ul>
                     </li>
                     <li>
-                        <a href="{{ url_for('emotion.emotions') }}"><i class="fa fa-heart fa-fw"></i> Emotions</a>
+                        <a href="#"><i class="fa fa-heart fa-fw"></i> Emotions</a>
+                        <ul class="nav nav-second-level">
+                            <li>
+                                <a href="{{ url_for('emotion.annotator_disagreement') }}">Annotator Disagreement</a>
+                            </li>
+                        </ul>
+
                     </li>
                     <li>
-                        <a href="forms.html"><i class="fa fa-users fa-fw"></i> Users</a>
+                        <a href="#"><i class="fa fa-users fa-fw"></i> Users</a>
                         <ul class="nav nav-second-level">
                             <li>
                                 <a href="{{ url_for('user.users') }}">Users List</a>

@@ -4,7 +4,7 @@ from collections import OrderedDict
 from hashlib import md5
 
 from flask import current_app
-from sqlalchemy import or_, text
+from sqlalchemy import or_, text, and_
 from flask_login import UserMixin
 
 from itsdangerous import URLSafeTimedSerializer, \
@@ -25,11 +25,12 @@ def user_activity_between_dates(from_date, to_date):
         count(case when tr.deleted = 1 and tr.`table` = "synset" then  1 END) synset_removed,\
         count(case when tr.inserted = 1 and tr.`table` = "synsetrelation" then  1 END) synsetrelation_created,\
         count(case when tr.deleted = 1 and tr.`table` = "synsetrelation" then  1 END) synsetrelation_removed\
-        FROM tracker tr WHERE DATE(tr.datetime) >= :from_date AND DATE(tr.datetime) <= :to_date GROUP BY tr.user')
+        FROM tracker tr WHERE DATE(tr.datetime) >= :from_date AND DATE(tr.datetime) <= :to_date AND tr.user is not null GROUP BY tr.user')
     return db.engine.execute(sql, {'from_date': from_date, 'to_date': to_date})
 
 
-def user_activity_month(month, year):
+def user_activity_month(year,month, user):
+
     sql = text('SELECT tr.user, \
         count(case when tr.inserted = 1 and tr.`table` = "lexicalunit" then  1 END) sense_created,\
         count(case when tr.inserted = 0 and tr.deleted = 0 and tr.`table` = "lexicalunit" then  1 END) sense_modified,\
@@ -41,8 +42,8 @@ def user_activity_month(month, year):
         count(case when tr.deleted = 1 and tr.`table` = "synset" then  1 END) synset_removed,\
         count(case when tr.inserted = 1 and tr.`table` = "synsetrelation" then  1 END) synsetrelation_created,\
         count(case when tr.deleted = 1 and tr.`table` = "synsetrelation" then  1 END) synsetrelation_removed\
-        FROM tracker tr WHERE YEAR(tr.datetime) = :n_year AND MONTH(tr.datetime) = :n_month GROUP BY tr.user')
-    return db.engine.execute(sql, {'n_year': year, 'n_month': month})
+        FROM tracker tr WHERE YEAR(tr.datetime) = :n_year AND MONTH(tr.datetime) = :n_month AND tr.user =:user_name GROUP BY tr.user')
+    return db.engine.execute(sql, {'n_year': year, 'n_month': month, 'user_name': user})
 
 
 def user_activity_day(now_date):
@@ -57,7 +58,7 @@ def user_activity_day(now_date):
         count(case when tr.deleted = 1 and tr.`table` = "synset" then  1 END) synset_removed,\
         count(case when tr.inserted = 1 and tr.`table` = "synsetrelation" then  1 END) synsetrelation_created,\
         count(case when tr.deleted = 1 and tr.`table` = "synsetrelation" then  1 END) synsetrelation_removed\
-        FROM tracker tr WHERE DATE(tr.datetime) = :now_date')
+        FROM tracker tr WHERE DATE(tr.datetime) = :now_date AND tr.user is not null GROUP BY tr.user')
     return db.engine.execute(sql, {'now_date': now_date})
 
 
@@ -93,13 +94,23 @@ class User(UserMixin, db.Model):
     @classmethod
     def find_by_email(cls, email):
         """
-        Find a user by their e-mail or username.
+        Find a user by their e-mail.
 
         :param email: Email
         :type email: str
         :return: User instance
         """
         return User.query.filter(User.email == email).first()
+
+    @classmethod
+    def find_by_fullname(cls, first_name, last_name):
+        """
+        Find a user by first name and last name.
+        :param first_name: User first name
+        :param last_name: User last name
+        :return: User instance
+        """
+        return User.query.filter(and_(User.first_name == first_name, User.last_name == last_name)).first()
 
     @classmethod
     def encrypt_password(cls, plaintext_password):

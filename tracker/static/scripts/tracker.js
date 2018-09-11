@@ -47,6 +47,81 @@ $("#synset-search").keyup(function(event) {
     }
 });
 
+var user_activity_now = function(){
+       var u = $("#user-activity-today").attr("user-data");
+       var url = '/api/users/activity/now'
+       if (u !== ''){
+           url=url+"?q="+u;
+       }
+       return $.ajax({
+        type: 'GET',
+        url: url,
+        dataType: "json",
+        async: true,
+        contentType: "application/json; charset=utf-8",
+        beforeSend: function() {
+            $("#no-user-activity").hide();
+            $("#d_ylabel-axis").hide();
+            $("#d_xlabel-axis").hide();
+            $("#user-activity-today-spinner").show();
+        },
+        success: function(json){
+           $("#user-activity-today-spinner").hide();
+           if(json.ykeys.length > 0) {
+                $("#no-user-activity").hide();
+                draw_linear_graph(json);
+                $("#d_ylabel-axis").show();
+                $("#d_xlabel-axis").show();
+           } else {
+                $("#no-user-activity").show();
+                $("#d_ylabel-axis").hide();
+                $("#d_xlabel-axis").hide();
+           }
+        }
+    })
+}
+
+var user_activity_monthly = function(){
+       var u = $("#user-activity-monthly").attr("user-data");
+       var url = '/api/users/activity/monthly'
+       if (u !== ''){
+           url=url+"?q="+u;
+       }
+       return $.ajax({
+        type: 'GET',
+        url: url,
+        dataType: "json",
+        async: true,
+        contentType: "application/json; charset=utf-8",
+        beforeSend: function() {
+            $("#m_no-user-activity").hide();
+            $("#m_ylabel-axis").hide();
+            $("#m_xlabel-axis").hide();
+            $("#m_user-activity-monthly-spinner").show();
+        },
+        success: function(json){
+           $("#user-activity-monthly-spinner").hide();
+           if(json.ykeys.length > 0) {
+                $("#m_no-user-activity").hide();
+                draw_linear_graph(json);
+                $("#m_ylabel-axis").show();
+                $("#m_xlabel-axis").show();
+
+           } else {
+                $("#m_no-user-activity").show();
+                $("#m_ylabel-axis").hide();
+                $("#m_xlabel-axis").hide();
+           }
+        }
+    })
+}
+
+var draw_linear_graph = function(json){
+   conf=json;
+   conf.parseTime =false;
+   Morris.Line(conf);
+}
+
 $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip();
 });

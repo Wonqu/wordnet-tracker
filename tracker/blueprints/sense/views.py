@@ -4,6 +4,7 @@ from flask import (
 from flask_login import login_required
 
 from lib.util_sqlalchemy import paginate
+from tracker.blueprints.emotion.models import Emotion
 from tracker.blueprints.sense.forms import SenseRelationsHistoryForm, SenseHistoryForm
 from tracker.blueprints.sense.models import get_sense_relation_list, TrackerSenseRelationsHistory, Sense, \
     find_sense_history, find_sense_incoming_relations, find_sense_outgoing_relations, TrackerSenseHistory
@@ -28,11 +29,13 @@ def senses_history(page):
         .filter(TrackerSenseHistory.search_by_form_filter(request.args.get('date_from', ''),
                                                                    request.args.get('date_to', ''),
                                                                    request.args.get('sense_id', ''),
-                                                                   request.args.get('user', '')))
+                                                                   request.args.get('user', ''),
+                                                                request.args.get('pos', '')))
     cache_key = 'luh-count-' + \
                 request.args.get('date_from', '') + "_" + \
                 request.args.get('date_to', '') + "_" + \
                 request.args.get('sense_id', '') + "_" + \
+                request.args.get('pos', '') + "_" + \
                 request.args.get('user', '')
 
     pagination = paginate(paginated_senses, page, 50, cache_key)
@@ -64,7 +67,8 @@ def senses_relations_history(page):
                                                                    request.args.get('date_to', ''),
                                                                    request.args.get('sense_id', ''),
                                                                    request.args.get('user', ''),
-                                                                   request.args.get('relation_type', '')))
+                                                                   request.args.get('relation_type', '')
+                                                                   ))
 
     pagination = paginate(paginated_senses, page, 50, cache_key)
 
@@ -88,10 +92,13 @@ def sense_by_id(id):
     outgoing_rel = find_sense_outgoing_relations(id)
     outgoing_history = TrackerSenseRelationsHistory.query.filter(TrackerSenseRelationsHistory.source_id == id).all()
 
+    emotions = Emotion.query.filter(Emotion.sense_id == id).all()
+
     return render_template('sense/sense.html',
                            sense=sense,
                            sense_history=sense_hist,
                            incoming_rel=incoming_rel,
                            outgoing_rel=outgoing_rel,
                            outgoing_history=outgoing_history,
-                           incoming_history=incoming_history)
+                           incoming_history=incoming_history,
+                           emotions=emotions)

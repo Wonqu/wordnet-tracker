@@ -10,13 +10,13 @@ from flask import (
 
 from flask_login import (
     login_user,
-    logout_user, login_required)
+    logout_user, login_required, current_user)
 
 from sqlalchemy import text
 from lib.safe_next_url import safe_next_url
 from tracker.blueprints.user.decorator import anonymous_required
 from tracker.blueprints.user.forms import LoginForm, SearchForm, UserActivityForm
-from tracker.blueprints.user.models import User, user_activity_day, user_activity_between_dates
+from tracker.blueprints.user.models import User, user_activity_day, user_activity_between_dates, user_activity_month
 
 user = Blueprint('user', __name__, template_folder='templates')
 
@@ -57,7 +57,29 @@ def login():
 @user.route('/profile')
 @login_required
 def profile():
-    return render_template('user/profile.html')
+    q = request.args.get('q', '')
+    u = current_user
+
+    if q != '':
+        if "." in q:
+            fullname = q.split(".")
+        else:
+            fullname = q.split()
+
+        first_name = ""
+        last_name = ""
+
+        if len(fullname) > 0:
+            first_name = fullname[0]
+            if len(fullname) > 1:
+                last_name = fullname[1]
+
+        u = User.find_by_fullname(first_name, last_name)
+
+    results = user_activity_month(strftime("%Y", gmtime()), strftime("%m", gmtime()), q)
+    items, total = calculate_stats(results)
+    print(items)
+    return render_template('user/profile.html', user=u, stats=items)
 
 
 @user.route('/users', defaults={'page': 1})

@@ -26,11 +26,11 @@
                                 </tr>
                                 <tr>
                                     <td class="text-right">Definition</td>
-                                    <td>{{ synset.definition }}</td>
+                                    <td>{% if synset.definition is not none %} {{ synset.definition }} {% endif %}</td>
                                 </tr>
                                 <tr>
                                     <td class="text-right">Comment</td>
-                                    <td>{{ synset.comment }}</td>
+                                    <td>{% if synset.comment is not none %} {{ synset.comment }} {% endif %}</td>
                                 </tr>
                                 <tr>
                                     <td class="text-right">Abstract</td>
@@ -46,11 +46,11 @@
                                 </tr>
                                 <tr>
                                     <td class="text-right">Status</td>
-                                    <td>{{ synset.status }}</td>
+                                    <td><span class="label {{ status[synset.status|string]['tag'] }}">{{ status[synset.status|string]['value'] }}</span></td>
                                 </tr>
                                 <tr>
                                     <td class="text-right">Status Error Comment</td>
-                                    <td>{{ synset.error_comment }}</td>
+                                    <td>{% if synset.error_comment is not none %} {{ synset.error_comment }} {% endif %}</td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -96,11 +96,11 @@
                                             {% elif s[2]=='modified' %}
                                                 <span class="label label-info">Modified</span>
                                             {% endif %}</td>
-                                            <td>{{ s[3] }}</td>
-                                            <td>{{ s[4] }}</td>
-                                            <td>{{ s[5] }}</td>
-                                            <td>{{ s[6] }}</td>
-                                            <td>{{ s[7] }}</td>
+                                            <td>{% if s[3] is not none %} {{ s[3] }} {% endif %}</td>
+                                            <td>{% if s[4] is not none %} {{ s[4] }} {% endif %}</td>
+                                            <td>{% if s[5] is not none %} {{ s[5] }} {% endif %}</td>
+                                            <td>{% if s[6] is not none %} {{ s[6] }} {% endif %}</td>
+                                            <td>{% if s[7] is not none %} {{ s[7] }} {% endif %}</td>
                                         </tr>
                                     {% endfor %}
                                     </tbody>
@@ -125,7 +125,7 @@
                                 {% for s in senses %}
                                     <a href="{{ url_for('sense.sense_by_id', id=s[0]) }}" class="list-group-item">
                                         {{ s[1] }}
-                                        <span class="pull-right text-muted small"><em>{{ s[2] }}</em>
+                                        <span class="pull-right text-muted small"><em>{{ pos[s[2]|string] }}</em>
                                     </span>
                                     </a>
                                 {% endfor %}

@@ -29,7 +29,7 @@ $(function() {
     //     return this.href == url;
     // }).addClass('active').parent().parent().addClass('in').parent();
     var element = $('ul.nav a').filter(function() {
-        return this.href == url;
+        return this.href === url;
     }).addClass('active').parent();
 
     while (true) {
@@ -47,9 +47,19 @@ $("#synset-search").keyup(function(event) {
     }
 });
 
-var user_activity_now = function(){
+var user_activity_now = function(date){
+
        var u = $("#user-activity-today").attr("user-data");
-       var url = '/api/users/activity/now'
+       $("#user-activity-today").empty();
+
+       var url = ''
+       if( date !== '') {
+           url = '/api/users/activity/date/'+date;
+           $("#chart-activity-name").text('Users Activity '+ date );
+       } else {
+           url = '/api/users/activity/now'
+           $("#chart-activity-name").text('Today\'s Users Activity');
+       }
        if (u !== ''){
            url=url+"?q="+u;
        }
@@ -79,6 +89,17 @@ var user_activity_now = function(){
            }
         }
     })
+}
+
+var user_activity_yesterday = function(){
+     var previousDay =  moment(new Date()).add(-1, 'days').format("YYYY-MM-DD").toString();
+     user_activity_now(previousDay);
+     $("#chart-activity-name").text('Users Activity Yesterday');
+}
+
+var user_activity_by_date = function(){
+     let d = $("#activity_date").val();
+     user_activity_now(d);
 }
 
 var user_activity_monthly = function(){
@@ -124,4 +145,13 @@ var draw_linear_graph = function(json){
 
 $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip();
+    $('#date_from').datetimepicker({
+        format: 'YYYY-MM-DD'
+    });
+    $('#date_to').datetimepicker({
+        format: 'YYYY-MM-DD'
+    });
+    $('#activity_date').datetimepicker({
+        format: 'YYYY-MM-DD'
+    });
 });

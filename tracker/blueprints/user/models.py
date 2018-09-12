@@ -30,7 +30,7 @@ def user_activity_between_dates(from_date, to_date):
 
 
 def user_activity_month(year,month, user):
-
+    user = user.replace(" ", ".")
     sql = text('SELECT tr.user, \
         count(case when tr.inserted = 1 and tr.`table` = "lexicalunit" then  1 END) sense_created,\
         count(case when tr.inserted = 0 and tr.deleted = 0 and tr.`table` = "lexicalunit" then  1 END) sense_modified,\

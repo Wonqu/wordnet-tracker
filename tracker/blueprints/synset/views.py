@@ -4,7 +4,7 @@ from flask import (
 from flask_login import login_required
 
 
-from lib.util_sqlalchemy import paginate
+from lib.util_sqlalchemy import paginate, status, parts_of_speech
 from tracker.blueprints.synset.forms import SynsetHistoryForm, SynsetRelationsHistoryForm
 from tracker.blueprints.synset.models import TrackerSynsetsHistory, get_user_name_list, \
     TrackerSynsetsRelationsHistory, get_synset_relation_list, Synset, find_synset_incoming_relations, \
@@ -102,6 +102,8 @@ def synset_by_id(id):
     senses_history = find_synset_sense_history(id)
 
     return render_template('synset/synset.html',
+                           status=status(),
+                           pos=parts_of_speech(),
                            incoming_rel=incoming_rel,
                            outgoing_rel=outgoing_rel,
                            outgoing_history=outgoing_history,

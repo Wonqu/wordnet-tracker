@@ -79,7 +79,7 @@ case
 	when tr.deleted = 1  then 'removed'
     when tr.inserted = 0 and tr.deleted = 0 then 'modified'
 end as operation,
-lu.id as k_id, lu.lemma as k_lemma,
+lu.id as k_id, lu.lemma as k_lemma, lu.pos as key_pos, lu.status as key_status,
 tlu.lemma as tu1_lemma, tlu.variant as tu1_variant, tlu.domain as tu1_domain, tlu.pos as tu1_pos,
 tlu.status as tu1_status ,tlu.comment as tu1_comment, tlu.owner as tu1_owner,
 tlu2.lemma as tu2_lemma,tlu2.variant as tu2_variant,tlu2.domain as tu2_domain, tlu2.pos as tu2_pos,
@@ -91,6 +91,7 @@ LEFT JOIN tracker_lexicalunit tlu2 ON (tr2.tid = tlu2.tid)
 LEFT JOIN lexicalunit lu ON (lu.ID = tlu.ID)
 WHERE tr.data_before_change IS NULL AND tr.`table` = 'lexicalunit'
 ORDER BY tr.datetime desc
+
 
 CREATE VIEW view_emotion_disagreement AS
 SELECT l.ID as sense_id, concat(l.lemma,' ', l.variant) as lemma, l.status,

@@ -101,7 +101,23 @@
             <div class="col-lg-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <i class="fa fa-bar-chart-o fa-fw"></i> Today's Users Activity
+                        <i class="fa fa-bar-chart-o fa-fw"></i><span id="chart-activity-name">Today's Users Activity</span>
+                        <div class="pull-right">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                                        Actions
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu pull-right" role="menu">
+                                        <li><a id="show-today" href="#" onclick="user_activity_now('');">Show today</a>
+                                        </li>
+                                        <li><a id="show-yesterday" href="#" onclick="user_activity_yesterday();">Show yesterday</a>
+                                        </li>
+                                        <li><a id="show-by-date" href="#" data-toggle="modal" data-target=".bs-activity-modal-sm">Show at specified date</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
                     </div>
                     <div class="panel-body">
                         <div class=row">
@@ -120,9 +136,31 @@
             </div>
         </div>
     </div>
+    <div class="modal fade bs-activity-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Select Date</h4>
+                </div>
+                <div class="modal-body">
+                     <div class="input-group input-group-sm date" id='date_from'>
+                        <input id="activity_date" name="activity_date" type="text" class="form-control"
+                               placeholder="Select Date" value="">
+                        <div class="input-group-addon">
+                            <i class="fa fa-calendar"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                   <button type="button" class="btn btn-sm btn-primary" data-dismiss="modal" onclick="user_activity_by_date()"> Ok </button>
+                </div>
+            </div>
+        </div>
+    </div>
     <script>
         $(document).ready(function(){
-            user_activity_now();
+            user_activity_now('');
         });
     </script>
 {% endblock %}

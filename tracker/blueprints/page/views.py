@@ -126,3 +126,48 @@ def users_activity_monthly():
     }
 
     return jsonify(response), 200
+
+
+@page.route('/api/users/activity/date/<string:_date>')
+def users_activity_by_day(_date):
+
+    active = find_user_activity_now(_date, '')
+
+    start_date = datetime(2018, 1, 1, 0, 0, 0)
+    d = []
+    v = []
+    users = set()
+
+    for x in active:
+        v.append(x)
+        users.add(x[0])
+
+    for td in (start_date + timedelta(hours=1 * it) for it in xrange(24)):
+        row = dict()
+        row['y'] = td.strftime("%H:%M")
+        for u in users:
+            row[u] = 0
+        d.append(row)
+
+    for r in v:
+        for item in range(0, len(d)):
+            if d[item]['y'] == r[1]:
+                d[item][r[0]] = r[2]
+
+    response = {
+        'data': d,
+        'xkey': 'y',
+        'ykeys': list(users),
+        'labels': list(users),
+        'fillOpacity': 0.6,
+        'hideHover': 'auto',
+        'behaveLikeLine': bool('true'),
+        'resize': bool('true'),
+        'pointFillColors': ['#ffffff'],
+        'pointStrokeColors': ['black'],
+        'element': 'user-activity-today',
+        'parseTime': bool('false'),
+        'stacked': bool('true')
+    }
+
+    return jsonify(response), 200

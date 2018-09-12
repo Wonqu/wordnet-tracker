@@ -17,6 +17,7 @@ def find_created_items_today():
 
 def find_user_activity_now(today, user):
     if user != '':
+        user = user.replace(" ", ".")
         sql = text('SELECT tr.user, TIME_FORMAT(tr.datetime, "%H:00"), count(tr.id) \
                         FROM tracker tr WHERE DATE(tr.datetime) = :today AND tr.user=:user_name \
                         GROUP BY tr.user, hour( tr.datetime ) order by  hour( tr.datetime )')
@@ -29,7 +30,7 @@ def find_user_activity_now(today, user):
 
 
 def find_user_activity_month(year, month, user):
-
+        user = user.replace(" ", ".")
         sql = text('SELECT tr.user, DATE_FORMAT(tr.datetime, "%d"), count(tr.id) \
                         FROM tracker tr WHERE YEAR(tr.datetime) = :yr AND MONTH(tr.datetime)=:mnth AND tr.user=:user_name \
                         GROUP BY tr.user, day( tr.datetime ) order by day( tr.datetime )')

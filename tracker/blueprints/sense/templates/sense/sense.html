@@ -34,15 +34,15 @@
                                 </tr>
                                 <tr>
                                     <td class="text-right">Part of speech</td>
-                                    <td>{{ sense.pos }}</td>
+                                    <td><span class="label label-default">{{ pos[sense.pos|string] }}</span></td>
                                 </tr>
                                 <tr>
                                     <td class="text-right">Domain</td>
-                                    <td>{{ sense.domain }}</td>
+                                    <td>{{ domain[sense.domain|string] }}</td>
                                 </tr>
                                 <tr>
                                     <td class="text-right">Aspect</td>
-                                    <td>{{ sense.verb_aspect }}</td>
+                                    <td>{{ aspect[sense.verb_aspect|string] }}</td>
                                 </tr>
                                 <tr>
                                     <td class="text-right">Comment</td>
@@ -54,11 +54,11 @@
                                 </tr>
                                 <tr>
                                     <td class="text-right">Status</td>
-                                    <td>{{ sense.status }}</td>
+                                    <td><span class="label {{ status[sense.status|string]['tag'] }}">{{ status[sense.status|string]['value'] }}</span></td>
                                 </tr>
                                 <tr>
                                     <td class="text-right">Status Error Comment</td>
-                                    <td>{{ sense.error_comment }}</td>
+                                    <td>{% if sense.error_comment is not none %}  }} {{ sense.error_comment }} {%  endif %}</td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -102,12 +102,12 @@
                                         {% elif s[2]=='modified' %}
                                             <span class="label label-info">Modified</span>
                                         {% endif %}</td>
-                                        <td>{{ s[3] }}</td>
-                                        <td>{{ s[4] }}</td>
-                                        <td>{{ s[5] }}</td>
-                                        <td>{{ s[6] }}</td>
-                                        <td>{{ s[7] }}</td>
-                                        <td>{{ s[8] }}</td>
+                                        <td>{% if s[3] is not none %}  {{ s[3] }} {%  endif %}</td>
+                                        <td>{% if s[4] is not none %}  {{ s[4] }} {%  endif %}</td>
+                                        <td><span class="label label-default">{{ pos[s[5]|string] }}</span></td>
+                                        <td>{{ domain[s[6]|string] }}</td>
+                                        <td>{% if s[7] is not none %}  }} {{ s[7] }} {%  endif %}</td>
+                                        <td><span class="label {{ status[s[8]|string]['tag'] }}">{{ status[s[8]|string]['value'] }}</span></td>
                                     </tr>
                                 {% endfor %}
                                 </tbody>
@@ -313,7 +313,7 @@
                                             </td>
                                             <td>{{ e.owner }}</td>
                                             <td>{{ e.status }}</td>
-                                            <td>{{ e.super_annotation }}</td>
+                                            <td>{%  if e.super_annotation =='0' %} Yes {% else %}  No {% endif %}</td>
                                             {% set emo = e.emotions.split(';') %}
                                             <td>
                                                 {% for i in emo %}
@@ -327,8 +327,8 @@
                                                 {% endfor %}
                                             </td>
                                             <td>{{ e.markedness }}</td>
-                                            <td>{{ e.example1 }}</td>
-                                            <td>{{ e.example2 }}</td>
+                                            <td>{% if e.example1 is not none %} {{ e.example1 }} {%  endif %}</td>
+                                            <td>{% if e.example2 is not none %} {{ e.example2 }} {%  endif %}</td>
                                         </tr>
                                     {% endfor %}
                                     </tbody>

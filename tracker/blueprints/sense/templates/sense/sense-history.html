@@ -41,11 +41,7 @@
                     </script>
                     <div class="form-group form-group-sm">
                         <select class="form-control" id="users" name="user">
-                            {% if request.args.get('user', '') == '' %}
-                                <option value="" disabled selected>Select User</option>
-                            {% else %}
-                                <option value="">Select User</option>
-                            {% endif %}
+                        <option value=""  {% if request.args.get('user', '') == '' %}selected{% endif %}>Select User</option>
                             {% for u in users %}
                                 {% if u is not none and u != '' %}
                                     <option {% if request.args.get('user', '') == u %}
@@ -57,15 +53,22 @@
                     </div>
                      <div class="form-group form-group-sm">
                         <select class="form-control" id="pos" name="pos">
-                            {% if request.args.get('pos', '') == '' %}
-                                <option value="" disabled selected>Select Part Of Speech</option>
-                            {% else %}
-                                <option value="">Select Part Of Speech</option>
-                            {% endif %}
-                            <option value="1" {% if request.args.get('pos', '') == 1 %}selected{% endif %}>Verb</option>
-                            <option value="2" {% if request.args.get('pos', '') == 2 %}selected{% endif %}>Noun</option>
-                            <option value="3" {% if request.args.get('pos', '') == 3 %}selected{% endif %}>Adverb</option>
-                            <option value="4" {% if request.args.get('pos', '') == 4 %}selected{% endif %}>Adjective</option>
+                            <option value=""  {% if request.args.get('pos', '') == '' %}selected{% endif %}>Select Part Of Speech</option>
+                            {% for k, v in pos.items() %}
+                             {% if k != 'None' %}
+                            <option value={{ k }} {% if request.args.get('pos', '') == k  %}selected{% endif %}>{{ v }}</option>
+                             {% endif %}
+                            {%  endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group form-group-sm">
+                        <select class="form-control" id="status" name="status">
+                            <option value=""  {% if request.args.get('status', '') == '' %}selected{% endif %}>Select Status</option>
+                            {% for k, v in status.items() %}
+                             {% if k != 'None' %}
+                                <option value={{ k }} {% if request.args.get('status', '') == k  %}selected{% endif %}>{{ v['value'] }}</option>
+                             {% endif %}
+                            {%  endfor %}
                         </select>
                     </div>
                     <div class="form-group form-group-sm">
@@ -144,9 +147,9 @@
 
                             <td {{ st_bg }}>{% if  sh.u1_lemma is not none %} {{ sh.u1_lemma }} {% endif %}</td>
                             <td {{ st_bg }}>{% if  sh.u1_variant is not none %} {{ sh.u1_variant }} {% endif %}</td>
-                            <td {{ st_bg }}>{% if  sh.u1_domain is not none %} {{ sh.u1_domain }} {% endif %}</td>
-                            <td {{ st_bg }}>{% if  sh.u1_pos is not none %} {{ sh.u1_pos }} {% endif %}</td>
-                            <td {{ st_bg }}>{% if  sh.u1_status is not none %} {{ sh.u1_status }} {% endif %}</td>
+                            <td {{ st_bg }}>{% if  sh.u1_domain is not none %} {{ domain[sh.u1_domain|string] }} {% endif %}</td>
+                            <td {{ st_bg }}>{% if  sh.u1_pos is not none %} <span class="label label-default">{{ pos[sh.u1_pos|string] }} </span> {% endif %}</td>
+                            <td {{ st_bg }}>{% if  sh.u1_status is not none %} <span class="label {{ status[sh.u1_status|string]['tag'] }}">{{ status[sh.u1_status|string]['value']}}</span> {% endif %}</td>
                             <td {{ st_bg }}>{% if  sh.u1_comment is not none %} {{ sh.u1_comment }} {% endif %}</td>
                             <td {{ st_bg }}>{% if  sh.u1_owner is not none %} {{ sh.u1_owner }} {% endif %}</td>
                             </tr>
@@ -154,9 +157,9 @@
                                     <tr>
                                         <td class="info">{% if  sh.u2_lemma is not none %} {{ sh.u2_lemma }} {% endif %}</td>
                                         <td class="info">{% if  sh.u2_variant is not none %} {{ sh.u2_variant }} {% endif %}</td>
-                                        <td class="info">{% if  sh.u2_domain is not none %} {{ sh.u2_domain }} {% endif %}</td>
-                                        <td class="info">{% if  sh.u2_pos is not none %} {{ sh.u2_pos }} {% endif %}</td>
-                                        <td class="info">{% if  sh.u2_status is not none %} {{ sh.u2_status }} {% endif %}</td>
+                                        <td class="info">{% if  sh.u2_domain is not none %} {{ domain[sh.u2_domain] }} {% endif %}</td>
+                                        <td class="info">{% if  sh.u2_pos is not none %} <span class="label label-default">{{ pos[sh.u2_pos|string] }} {% endif %}</td>
+                                        <td class="info">{% if  sh.u2_status is not none %} <span class="label {{ status[sh.u2_status|string]['tag'] }}">{{ status[sh.u2_status|string]['value']}}</span> {% endif %}</td>
                                         <td class="info">{% if  sh.u2_comment is not none %} {{ sh.u2_comment }} {% endif %}</td>
                                         <td class="info">{% if  sh.u2_owner is not none %} {{ sh.u2_owner }} {% endif %}</td>
                                     </tr>

@@ -225,6 +225,10 @@ class TrackerSenseHistory(db.Model):
 
     key_lemma = db.Column('k_lemma', db.String(255))
 
+    key_pos = db.Column('key_pos', db.Integer)
+
+    key_status = db.Column('key_status', db.Integer)
+
     u1_lemma = db.Column('tu1_lemma', db.String(255))
 
     u1_variant = db.Column('tu1_variant', db.Integer)
@@ -273,7 +277,7 @@ class TrackerSenseHistory(db.Model):
         return field, direction
 
     @classmethod
-    def search_by_form_filter(cls, date_from, date_to, sense_id, user, pos):
+    def search_by_form_filter(cls, date_from, date_to, sense_id, user, pos, status):
         """
         Search a resource by 1 or more fields.
 
@@ -292,12 +296,7 @@ class TrackerSenseHistory(db.Model):
         if user is not '':
             search_chain.append(TrackerSenseHistory.user == user)
         if pos is not '':
-            if pos == 1:
-                search_chain.append(TrackerSenseHistory.u1_pos.in_(1, 5))
-            elif pos == 2:
-                search_chain.append(TrackerSenseHistory.u1_pos.in_(2, 6))
-            elif pos == 3:
-                search_chain.append(TrackerSenseHistory.u1_pos.in_(3, 7))
-            elif pos == 4:
-                search_chain.append(TrackerSenseHistory.u1_pos.in_(4, 8))
+            search_chain.append(TrackerSenseHistory.key_pos == pos)
+        if status is not '':
+            search_chain.append(TrackerSenseHistory.key_status == status)
         return and_(*search_chain)

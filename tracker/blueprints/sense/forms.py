@@ -16,4 +16,5 @@ class SenseHistoryForm(FlaskForm):
     sense_id = IntegerField("sense_id")
     user = TextField("user")
     pos = IntegerField("pos")
+    status = IntegerField("status")
 

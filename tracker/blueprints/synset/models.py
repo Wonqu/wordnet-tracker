@@ -1,6 +1,6 @@
 from _operator import or_
 
-from sqlalchemy import and_, text
+from sqlalchemy import and_, text, func
 
 from lib.util_sqlalchemy import AwareDateTime
 from tracker.extensions import db, cache
@@ -75,9 +75,9 @@ class TrackerSynsetsHistory(db.Model):
         search_chain = list()
 
         if date_from is not '':
-            search_chain.append(TrackerSynsetsHistory.datetime >= date_from)
+            search_chain.append(func.DATE(TrackerSynsetsHistory.datetime) >= date_from)
         if date_to is not '':
-            search_chain.append(TrackerSynsetsHistory.datetime <= date_to)
+            search_chain.append(func.DATE(TrackerSynsetsHistory.datetime) <= date_to)
         if synset_id is not '':
             search_chain.append(TrackerSynsetsHistory.synset_id == synset_id)
         if user is not '':
@@ -158,9 +158,9 @@ class TrackerSynsetsRelationsHistory(db.Model):
         search_chain = list()
 
         if date_from is not '':
-            search_chain.append(TrackerSynsetsRelationsHistory.datetime >= date_from)
+            search_chain.append(func.DATE(TrackerSynsetsRelationsHistory.datetime) >= date_from)
         if date_to is not '':
-            search_chain.append(TrackerSynsetsRelationsHistory.datetime <= date_to)
+            search_chain.append(func.DATE(TrackerSynsetsRelationsHistory.datetime) <= date_to)
         if synset_id is not '':
             search_chain.append(TrackerSynsetsRelationsHistory.source_id == synset_id)
         if user is not '':

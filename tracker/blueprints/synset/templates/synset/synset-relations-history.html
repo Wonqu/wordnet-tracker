@@ -96,9 +96,8 @@
                             </tr>
                             <tr>
                                 <th scope="col" class="col-header">#</th>
-                                <th scope="col" class="col-header">Date</th>
-                                <th scope="col" class="col-header">User</th>
-                                <th scope="col" class="col-header">Action</th>
+                                <th scope="col" class="col-header">Audit Log</th>
+                                <th scope="col" class="col-header">Operation</th>
                                 <th scope="col" class="col-header">ID</th>
                                 <th scope="col" class="col-header">Unitstr</th>
                                 <th scope="col" class="col-header">ID</th>
@@ -116,16 +115,23 @@
                                 {% endif %}
                             <td>{{ r.id }}</td>
                             <td>
+                              <div class="text-center small-log bold-log">
+                                {{ r.user }}
+                              </div>
+                                <div class="text-center small-log">
                                 <time class="short-date"
                                       data-datetime="{{ r.datetime }}">{{ r.datetime }}</time>
+                              </div>
+
                             </td>
-                            <td>{{ r.user }}</td>
                             <td>
+                            <div class="text-center">
                                 {% if r.operation=='created' %}
                                     <span class="label label-success">Created</span>
                                 {% elif r.operation=='removed' %}
                                     <span class="label label-danger">Removed</span>
                                 {% endif %}
+                            </div>
                             </td>
                             <td>
                                 {% if r.source_id is not none %}

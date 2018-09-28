@@ -89,8 +89,7 @@
                         <table class="table table-bordered table-condensed table-hover table-striped">
                             <thead>
                             <tr>
-                                <th rowspan="2" class="col-header text-center">Date</th>
-                                <th rowspan="2" class="col-header text-center">User</th>
+                                <th rowspan="2" class="col-header text-center">Audit Log</th>
                                 <th rowspan="2" class="col-header text-center">Operation</th>
                                 <th rowspan="2" colspan="2" class="col-header text-center">Key</th>
                                 <th colspan="7" class="text-center" scope="colgroup">Attributes</th>
@@ -117,12 +116,17 @@
                                         {% set rowsp = 1 %}
                                     <tr class="danger">
                                 {% endif %}
-                            <td rowspan="{{ rowsp }}">
-                                <time class="short-date"
+                              <td rowspan="{{ rowsp }}">
+                                 <div class="text-center small-log bold-log">
+                                 {{ sh.user }}
+                                 </div>
+                                    <div class="text-center small-log">
+                                    <time class="short-date"
                                       data-datetime="{{ sh.datetime }}">{{ sh.datetime }}</time>
-                            </td>
-                            <td rowspan="{{ rowsp }}">{{ sh.user }}</td>
+                                    </div>
+                                </td>
                             <td rowspan="{{ rowsp }}">
+                            <div class="text-center">
                                 {% if sh.operation=='modified' %}
                                     <span class="label label-info">Modified</span>
                                 {% elif sh.operation=='created' %}
@@ -130,6 +134,7 @@
                                 {% elif sh.operation=='removed' %}
                                     <span class="label label-danger">Removed</span>
                                 {% endif %}
+                            </div>
                             </td>
                             <td rowspan="{{ rowsp }}">
                                 {% if  sh.key_id is not none %}

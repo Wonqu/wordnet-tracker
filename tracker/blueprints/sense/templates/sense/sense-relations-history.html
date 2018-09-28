@@ -84,21 +84,20 @@
                     <div class="table-responsive">
                         <table class="table table-bordered table-condensed table-hover table-striped">
                             <thead>
-                            <colgroup span="4"></colgroup>
+                            <colgroup span="3"></colgroup>
                             <colgroup span="2"></colgroup>
                             <colgroup span="2"></colgroup>
                             <colgroup span="2"></colgroup>
                             <tr>
-                                <th colspan="4" class="text-center" scope="colgroup">Operation</th>
+                                <th colspan="3" class="text-center" scope="colgroup">Operation</th>
                                 <th colspan="2" class="text-center" scope="colgroup">Source Sense</th>
                                 <th colspan="2" class="text-center" scope="colgroup">Relation</th>
                                 <th colspan="2" class="text-center" scope="colgroup">Target Sense</th>
                             </tr>
                             <tr>
                                 <th scope="col" class="col-header">#</th>
-                                <th scope="col" class="col-header">Date</th>
-                                <th scope="col" class="col-header">User</th>
-                                <th scope="col" class="col-header">Action</th>
+                                <th scope="col" class="col-header">Audit Log</th>
+                                <th scope="col" class="col-header">Operation</th>
                                 <th scope="col" class="col-header">ID</th>
                                 <th scope="col" class="col-header">Unitstr</th>
                                 <th scope="col" class="col-header">ID</th>
@@ -116,16 +115,21 @@
                                 {% endif %}
                             <td>{{ r.id }}</td>
                             <td>
+                                <div class="text-center small-log bold-log">
+                                {{ r.user }}
+                                    </div>
+                                <div class="text-center small-log">
                                 <time class="short-date"
                                       data-datetime="{{ r.datetime }}">{{ r.datetime }}</time>
+                                    </div>
                             </td>
-                            <td>{{ r.user }}</td>
-                            <td>
+                            <td><div class="text-center">
                                 {% if r.operation=='created' %}
                                     <span class="label label-success">Created</span>
                                 {% elif r.operation=='removed' %}
                                     <span class="label label-danger">Removed</span>
                                 {% endif %}
+                            </div>
                             </td>
                             <td> {% if r.source_id is not none %}
                                     <a href="{{ url_for('sense.sense_by_id', id=r.source_id) }}">{{ r.source_id }}</a>

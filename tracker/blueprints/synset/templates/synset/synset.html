@@ -46,11 +46,16 @@
                                 </tr>
                                 <tr>
                                     <td class="text-right">Status</td>
-                                    <td><span class="label {{ status[synset.status|string]['tag'] }}">{{ status[synset.status|string]['value'] }}</span></td>
+                                    <td>
+                                        {% if synset is not none %}
+                                            <span class="label {{ status[synset.status|string]['tag'] }}">{{ status[synset.status|string]['value'] }}</span>
+                                            </td>
+                                        {% endif %}
                                 </tr>
                                 <tr>
                                     <td class="text-right">Status Error Comment</td>
-                                    <td>{% if synset.error_comment is not none %} {{ synset.error_comment }} {% endif %}</td>
+                                    <td>{% if synset.error_comment is not none %}
+                                        {{ synset.error_comment }} {% endif %}</td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -71,8 +76,7 @@
                                 <table class="table table-bordered table-condensed table-hover table-striped">
                                     <thead>
                                     <tr>
-                                        <th class="text-center">Date</th>
-                                        <th class="text-center">User</th>
+                                        <th class="text-center">Audit Log</th>
                                         <th class="text-center">Operation</th>
                                         <th class="text-center">Definition</th>
                                         <th class="text-center">Comment</th>
@@ -84,18 +88,24 @@
                                     <tbody>
                                     {% for s in synset_history %}
                                         <tr>
-                                            <td>
+                                                                                    <td>
+                                                <div class="text-center small-log bold-log">
+                                                {{s[1] }}
+                                                </div>
+                                                                                       <div class="text-center small-log">
                                                 <time class="short-date"
                                                       data-datetime="{{ s[0] }}">{{ s[0] }}</time>
+                                            </div>
                                             </td>
-                                            <td>{{ s[1] }}</td>
-                                            <td>{% if s[2]=='created' %}
+                                            <td><div class="text-center">
+                                                {% if s[2]=='created' %}
                                                 <span class="label label-success">Created</span>
                                             {% elif s[2]=='removed' %}
                                                 <span class="label label-danger">Removed</span>
                                             {% elif s[2]=='modified' %}
                                                 <span class="label label-info">Modified</span>
-                                            {% endif %}</td>
+                                            {% endif %}
+                                            </div></td>
                                             <td>{% if s[3] is not none %} {{ s[3] }} {% endif %}</td>
                                             <td>{% if s[4] is not none %} {{ s[4] }} {% endif %}</td>
                                             <td>{% if s[5] is not none %} {{ s[5] }} {% endif %}</td>
@@ -147,8 +157,7 @@
                                 <table class="table table-bordered table-condensed table-hover table-striped">
                                     <thead>
                                     <tr>
-                                        <th class="text-center">Date</th>
-                                        <th class="text-center">User</th>
+                                        <th class="text-center">Audit Log</th>
                                         <th class="text-center">Operation</th>
                                         <th class="text-center">Sense</th>
                                     </tr>
@@ -157,11 +166,17 @@
                                     {% for s in senses_history %}
                                         <tr>
                                             <td>
+                                                <div class="text-center small-log bold-log">
+                                                {{s[1] }}
+                                                </div>
+                                                                                       <div class="text-center small-log">
                                                 <time class="short-date"
                                                       data-datetime="{{ s[0] }}">{{ s[0] }}</time>
+                                            </div>
                                             </td>
-                                            <td>{{ s[1] }}</td>
-                                            <td>{% if s[2]=='attached sense' %}
+                                            <td>
+                                                 <div class="text-center">
+                                                {% if s[2]=='attached sense' %}
                                                 <span class="label label-success">Attached Sense</span>
                                             {% elif s[2]=='detached sense' %}
                                                 <span class="label label-danger">Detached Sense</span>
@@ -171,9 +186,10 @@
                                                     <a href="{{ url_for('sense.sense_by_id', id=s[3]) }}"> {{ s[4] }}</a>
                                                 {% endif %}
                                             </td>
+                                            </td>
                                         </tr>
                                     {% endfor %}
-                                    </tbody>
+                                     </tbody>
                                 </table>
                             </div>
                         {% endif %}
@@ -228,8 +244,7 @@
                                 <table class="table table-bordered table-condensed table-hover table-striped">
                                     <thead>
                                     <tr>
-                                        <th class="text-center">Date</th>
-                                        <th class="text-center">User</th>
+                                        <th class="text-center">Audit Log</th>
                                         <th class="text-center">Operation</th>
                                         <th class="text-center">Relation</th>
                                         <th class="text-center">Synset</th>
@@ -238,16 +253,24 @@
                                     <tbody>
                                     {% for r in incoming_history %}
                                         <tr>
-                                            <td>
+                                             <td>
+                                            <div class="text-center small-log bold-log">
+                                                {{ r.user }}
+                                            </div>
+                                            <div class="text-center small-log">
                                                 <time class="short-date"
                                                       data-datetime="{{ r.datetime }}">{{ r.datetime }}</time>
+                                            </div>
                                             </td>
-                                            <td>{{ r.user }}</td>
-                                            <td>{% if r.operation=='created' %}
+                                            <td>
+                                            <div class="text-center">
+                                            {% if r.operation=='created' %}
                                                 <span class="label label-success">Created</span>
                                             {% elif r.operation=='removed' %}
                                                 <span class="label label-danger">Removed</span>
-                                            {% endif %}</td>
+                                            {% endif %}
+                                            </div>
+                                            </td>
                                             <td>{{ r.relation_name }}</td>
                                             <td>
                                                 {% if r.source_id is not none %}
@@ -256,6 +279,8 @@
                                             </td>
                                         </tr>
                                     {% endfor %}
+
+
                                     </tbody>
                                 </table>
                             </div>
@@ -311,8 +336,7 @@
                                 <table class="table table-bordered table-condensed table-hover table-striped">
                                     <thead>
                                     <tr>
-                                        <th class="text-center">Date</th>
-                                        <th class="text-center">User</th>
+                                        <th class="text-center">Audit Log</th>
                                         <th class="text-center">Operation</th>
                                         <th class="text-center">Relation</th>
                                         <th class="text-center">Synset</th>
@@ -322,15 +346,23 @@
                                     {% for r in outgoing_history %}
                                         <tr>
                                             <td>
+                                            <div class="text-center small-log bold-log">
+                                                {{ r.user }}
+                                            </div>
+                                            <div class="text-center small-log">
                                                 <time class="short-date"
                                                       data-datetime="{{ r.datetime }}">{{ r.datetime }}</time>
+                                            </div>
                                             </td>
-                                            <td>{{ r.user }}</td>
-                                            <td>{% if r.operation=='created' %}
+                                            <td>
+                                            <div class="text-center">
+                                            {% if r.operation=='created' %}
                                                 <span class="label label-success">Created</span>
                                             {% elif r.operation=='removed' %}
                                                 <span class="label label-danger">Removed</span>
-                                            {% endif %}</td>
+                                            {% endif %}
+                                            </div>
+                                            </td>
                                             <td>{{ r.relation_name }}</td>
                                             <td>
                                                 {% if r.target_id is not none %}
@@ -347,6 +379,5 @@
                 </div>
             </div>
         </div>
-    </div>
     </div>
 {% endblock %}

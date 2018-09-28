@@ -58,7 +58,7 @@
                                 </tr>
                                 <tr>
                                     <td class="text-right">Status Error Comment</td>
-                                    <td>{% if sense.error_comment is not none %}  }} {{ sense.error_comment }} {%  endif %}</td>
+                                    <td>{% if sense.error_comment is not none %}  {{ sense.error_comment }} {%  endif %}</td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -76,8 +76,7 @@
                             <table class="table table-bordered table-condensed table-hover table-striped">
                                 <thead>
                                 <tr>
-                                    <th class="text-center">Date</th>
-                                    <th class="text-center">User</th>
+                                    <th class="text-center">Audit Log</th>
                                     <th class="text-center">Operation</th>
                                     <th class="text-center">Lemma</th>
                                     <th class="text-center">Variant</th>
@@ -91,22 +90,28 @@
                                 {% for s in sense_history %}
                                     <tr>
                                         <td>
+                                            <div class="text-center small-log bold-log">
+                                            {{ s[1] }}
+                                                </div>
+                                            <div class="text-center small-log">
                                             <time class="short-date"
                                                   data-datetime="{{ s[0] }}">{{ s[0] }}</time>
+                                                </div>
                                         </td>
-                                        <td>{{ s[1] }}</td>
-                                        <td>{% if s[2]=='created' %}
+                                        <td>
+                                        <div class="text-center">
+                                            {% if s[2]=='created' %}
                                             <span class="label label-success">Created</span>
                                         {% elif s[2]=='removed' %}
                                             <span class="label label-danger">Removed</span>
                                         {% elif s[2]=='modified' %}
                                             <span class="label label-info">Modified</span>
-                                        {% endif %}</td>
+                                        {% endif %}</div></td>
                                         <td>{% if s[3] is not none %}  {{ s[3] }} {%  endif %}</td>
                                         <td>{% if s[4] is not none %}  {{ s[4] }} {%  endif %}</td>
                                         <td><span class="label label-default">{{ pos[s[5]|string] }}</span></td>
                                         <td>{{ domain[s[6]|string] }}</td>
-                                        <td>{% if s[7] is not none %}  }} {{ s[7] }} {%  endif %}</td>
+                                        <td>{% if s[7] is not none %} {{ s[7] }} {%  endif %}</td>
                                         <td><span class="label {{ status[s[8]|string]['tag'] }}">{{ status[s[8]|string]['value'] }}</span></td>
                                     </tr>
                                 {% endfor %}
@@ -164,8 +169,7 @@
                                 <table class="table table-bordered table-condensed table-hover table-striped">
                                     <thead>
                                     <tr>
-                                        <th class="text-center">Date</th>
-                                        <th class="text-center">User</th>
+                                        <th class="text-center">Audit Log</th>
                                         <th class="text-center">Operation</th>
                                         <th class="text-center">Relation</th>
                                         <th class="text-center">Sense</th>
@@ -174,16 +178,21 @@
                                     <tbody>
                                     {% for r in incoming_history %}
                                         <tr>
-                                            <td>
+                                        <td>
+                                          <div class="text-center small-log bold-log">
+                                            {{ r.user }}
+                                          </div>
+                                          <div class="text-center small-log">
                                                 <time class="short-date"
                                                       data-datetime="{{ r.datetime }}">{{ r.datetime }}</time>
-                                            </td>
-                                            <td>{{ r.user }}</td>
-                                            <td>{% if r.operation=='created' %}
+                                          </div>
+                                        </td>
+                                            <td><div class="text-center">
+                                                {% if r.operation=='created' %}
                                                 <span class="label label-success">Created</span>
                                             {% elif r.operation=='removed' %}
                                                 <span class="label label-danger">Removed</span>
-                                            {% endif %}</td>
+                                            {% endif %} </div></td>
                                             <td>{{ r.relation_name }}</td>
                                             <td>
                                                 <a href="{{ url_for('sense.sense_by_id', id=r.target_id) }}"> {{ r.target_unitstr }}</a>
@@ -245,8 +254,7 @@
                                 <table class="table table-bordered table-condensed table-hover table-striped">
                                     <thead>
                                     <tr>
-                                        <th class="text-center">Date</th>
-                                        <th class="text-center">User</th>
+                                        <th class="text-center">Audit Log</th>
                                         <th class="text-center">Operation</th>
                                         <th class="text-center">Relation</th>
                                         <th class="text-center">Sense</th>
@@ -255,16 +263,21 @@
                                     <tbody>
                                     {% for r in outgoing_history %}
                                         <tr>
-                                            <td>
+                                             <td>
+                                          <div class="text-center small-log bold-log">
+                                            {{ r.user }}
+                                          </div>
+                                          <div class="text-center small-log">
                                                 <time class="short-date"
                                                       data-datetime="{{ r.datetime }}">{{ r.datetime }}</time>
-                                            </td>
-                                            <td>{{ r.user }}</td>
-                                            <td>{% if r.operation=='created' %}
+                                          </div>
+                                        </td>
+                                            <td><div class="text-center">
+                                            {% if r.operation=='created' %}
                                                 <span class="label label-success">Created</span>
                                             {% elif r.operation=='removed' %}
                                                 <span class="label label-danger">Removed</span>
-                                            {% endif %}</td>
+                                            {% endif %}</div></td>
                                             <td>{{ r.relation_name }}</td>
                                             <td>
                                                 <a href="{{ url_for('sense.sense_by_id', id=r.target_id) }}"> {{ r.target_unitstr }}</a>
@@ -293,8 +306,7 @@
                                 <table class="table table-bordered table-condensed table-hover table-striped">
                                     <thead>
                                     <tr>
-                                        <th class="text-center">Date</th>
-                                        <th class="text-center">User</th>
+                                        <th class="text-center">Audit Log</th>
                                         <th class="text-center">Status</th>
                                         <th class="text-center">Super Annotation</th>
                                         <th class="text-center">Emotions</th>
@@ -307,12 +319,16 @@
                                     <tbody>
                                     {% for e in emotions %}
                                         <tr>
-                                            <td>
+                                         <td>
+                                          <div class="text-center small-log bold-log">
+                                            {{ e.owner }}
+                                          </div>
+                                          <div class="text-center small-log">
                                                 <time class="short-date"
                                                       data-datetime="{{ e.creation_date}}">{{ e.creation_date }}</time>
-                                            </td>
-                                            <td>{{ e.owner }}</td>
-                                            <td>{{ e.status }}</td>
+                                          </div>
+                                        </td>
+                                            <td> <div class="text-center">{{ e.status }} <</td>
                                             <td>{%  if e.super_annotation =='0' %} Yes {% else %}  No {% endif %}</td>
                                             {% set emo = e.emotions.split(';') %}
                                             <td>
@@ -339,6 +355,5 @@
                 </div>
             </div>
         </div>
-    </div>
     </div>
 {% endblock %}

@@ -52,12 +52,12 @@ var user_activity_now = function(date){
        var u = $("#user-activity-today").attr("user-data");
        $("#user-activity-today").empty();
 
-       var url = ''
+       var url = '';
        if( date !== '') {
            url = '/api/users/activity/date/'+date;
            $("#chart-activity-name").text('Users Activity '+ date );
        } else {
-           url = '/api/users/activity/now'
+           url = '/api/users/activity/now';
            $("#chart-activity-name").text('Today\'s Users Activity');
        }
        if (u !== ''){
@@ -89,22 +89,22 @@ var user_activity_now = function(date){
            }
         }
     })
-}
+};
 
 var user_activity_yesterday = function(){
      var previousDay =  moment(new Date()).add(-1, 'days').format("YYYY-MM-DD").toString();
      user_activity_now(previousDay);
      $("#chart-activity-name").text('Users Activity Yesterday');
-}
+};
 
 var user_activity_by_date = function(){
      let d = $("#activity_date").val();
      user_activity_now(d);
-}
+};
 
 var user_activity_monthly = function(){
        var u = $("#user-activity-monthly").attr("user-data");
-       var url = '/api/users/activity/monthly'
+       var url = '/api/users/activity/monthly';
        if (u !== ''){
            url=url+"?q="+u;
        }
@@ -135,13 +135,13 @@ var user_activity_monthly = function(){
            }
         }
     })
-}
+};
 
 var draw_linear_graph = function(json){
    conf=json;
    conf.parseTime =false;
    Morris.Line(conf);
-}
+};
 
 $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip();

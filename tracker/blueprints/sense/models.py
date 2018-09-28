@@ -1,4 +1,4 @@
-from sqlalchemy import and_, text, or_
+from sqlalchemy import and_, text, or_, func
 
 from lib.util_sqlalchemy import AwareDateTime
 from tracker.extensions import db, cache
@@ -197,9 +197,9 @@ class TrackerSenseRelationsHistory(db.Model):
         search_chain = list()
 
         if date_from is not '':
-            search_chain.append(TrackerSenseRelationsHistory.datetime >= date_from)
+            search_chain.append(func.DATE(TrackerSenseRelationsHistory.datetime) >= date_from)
         if date_to is not '':
-            search_chain.append(TrackerSenseRelationsHistory.datetime <= date_to)
+            search_chain.append(func.DATE(TrackerSenseRelationsHistory.datetime) <= date_to)
         if sense_id is not '':
             search_chain.append(or_(TrackerSenseRelationsHistory.source_id == sense_id))
         if user is not '':
@@ -288,9 +288,9 @@ class TrackerSenseHistory(db.Model):
         search_chain = list()
 
         if date_from is not '':
-            search_chain.append(TrackerSenseHistory.datetime >= date_from)
+            search_chain.append(func.DATE(TrackerSenseHistory.datetime) >= date_from)
         if date_to is not '':
-            search_chain.append(TrackerSenseHistory.datetime <= date_to)
+            search_chain.append(func.DATE(TrackerSenseHistory.datetime) <= date_to)
         if sense_id is not '':
             search_chain.append(TrackerSenseHistory.key_id == sense_id)
         if user is not '':

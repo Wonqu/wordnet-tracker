@@ -18,12 +18,12 @@ def find_created_items_today():
 def find_user_activity_now(today, user):
     if user != '':
         user = user.replace(" ", ".")
-        sql = text('SELECT tr.user, TIME_FORMAT(tr.datetime, "%H:00"), count(tr.id) \
+        sql = text('SELECT CASE WHEN tr.user IS NULL THEN "Auto" ELSE tr.user END, TIME_FORMAT(tr.datetime, "%H:00"), count(tr.id) \
                         FROM tracker tr WHERE DATE(tr.datetime) = :today AND tr.user=:user_name \
                         GROUP BY tr.user, hour( tr.datetime ) order by  hour( tr.datetime )')
         return db.engine.execute(sql, {'today': today, 'user_name': user})
     else:
-        sql = text('SELECT tr.user, TIME_FORMAT(tr.datetime, "%H:00"), count(tr.id) \
+        sql = text('SELECT CASE WHEN tr.user IS NULL THEN "Auto" ELSE tr.user END, TIME_FORMAT(tr.datetime, "%H:00"), count(tr.id) \
                 FROM tracker tr WHERE DATE(tr.datetime) = :today \
                 GROUP BY tr.user, hour( tr.datetime ) order by  hour( tr.datetime )')
         return db.engine.execute(sql, {'today': today})

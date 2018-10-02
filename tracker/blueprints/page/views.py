@@ -42,7 +42,6 @@ def users_activity_now():
     d = []
     v = []
     users = set()
-
     for x in active:
         v.append(x)
         users.add(x[0])

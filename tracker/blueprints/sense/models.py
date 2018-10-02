@@ -86,7 +86,7 @@ def get_sense_relation_list():
         result = db.engine.execute(sql)
         for row in result:
             relations.append(row)
-            cache.set('sense-relations', relations, timeout=10 * 60)
+            cache.set('sense-relations', relations, timeout=7200)
 
     return relations
 

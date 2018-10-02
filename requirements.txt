@@ -24,4 +24,3 @@ Flask-Login==0.4.*
 Flask-Limiter==1.0.*
 python-memcached==1.59
 
-

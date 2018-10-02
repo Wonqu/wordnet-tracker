@@ -240,7 +240,7 @@ def get_user_name_list():
         result = db.engine.execute(sql)
         for row in result:
             user_names.append(row[0])
-            cache.set('user-names', user_names, timeout=30 * 60)
+            cache.set('user-names', user_names, timeout=7200)
 
     return user_names
 
@@ -255,7 +255,7 @@ def get_user_emotion_list():
         result = db.engine.execute(sql)
         for row in result:
             user_names.append(row[0])
-            cache.set('user-emotions-names', user_names, timeout=30 * 60)
+            cache.set('user-emotions-names', user_names, timeout=7200)
 
     return user_names
 
@@ -271,7 +271,7 @@ def get_synset_relation_list():
         result = db.engine.execute(sql)
         for row in result:
             relations.append(row)
-            cache.set('synset-relations', relations, timeout=10 * 60)
+            cache.set('synset-relations', relations, timeout=7200)
 
     return relations
 

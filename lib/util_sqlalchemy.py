@@ -243,7 +243,7 @@ def paginate(query, page=None, per_page=None, total_cache_key=''):
             total = cache.get(total_cache_key)
             if total is None:
                 total = query.order_by(None).count()
-                cache.set(total_cache_key, total, timeout=100 * 60)
+                cache.set(total_cache_key, total, timeout=7200)
         else:
             total = query.order_by(None).count()
 

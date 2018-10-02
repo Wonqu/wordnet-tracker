@@ -328,12 +328,11 @@
                                                       data-datetime="{{ e.creation_date}}">{{ e.creation_date }}</time>
                                           </div>
                                         </td>
-                                            <td> <div class="text-center">{{ e.status }} <</td>
+                                            <td> <div class="text-center">{{ e.status }}</div></td>
                                             <td>{%  if e.super_annotation =='0' %} Yes {% else %}  No {% endif %}</td>
                                             {% set emo = e.emotions.split(';') %}
                                             <td>
-                                                {% for i in emo %}
-                                                     <span class="label label-default">{{ i }}</span>
+                                                {% f
                                                 {% endfor %}
                                             </td>
                                             {% set valu = e.valuations.split(';') %}

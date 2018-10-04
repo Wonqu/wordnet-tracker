@@ -12,7 +12,7 @@ services:
     volumes:
       - '.:/app'
     ports:
-      - '5000:5000'
+      - '9000:5000'
 
   memcached:
     image: memcached:alpine

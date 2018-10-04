@@ -280,7 +280,11 @@
                                             {% endif %}</div></td>
                                             <td>{{ r.relation_name }}</td>
                                             <td>
+                                                {% if r.target_id is not none %}
                                                 <a href="{{ url_for('sense.sense_by_id', id=r.target_id) }}"> {{ r.target_unitstr }}</a>
+                                                {% else %}
+                                                    {{ r.target_unitstr }}
+                                                {% endif %}
                                             </td>
                                         </tr>
                                     {% endfor %}
@@ -332,7 +336,8 @@
                                             <td>{%  if e.super_annotation =='0' %} Yes {% else %}  No {% endif %}</td>
                                             {% set emo = e.emotions.split(';') %}
                                             <td>
-                                                {% f
+                                                {% for i in emo %}
+                                                     <span class="label label-default">{{ i }}</span>
                                                 {% endfor %}
                                             </td>
                                             {% set valu = e.valuations.split(';') %}

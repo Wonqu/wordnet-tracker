@@ -109,3 +109,9 @@ venv.bak/
 .mypy_cache/
 .dmypy.json
 dmypy.json
+
+# celery
+celerybeat.pid
+
+# mysql
+mysql/wordnet-work.LATEST.sql

@@ -1,0 +1,42 @@
+{% extends 'layouts/app.html' %}
+
+{% block title %}{{ name }}{% endblock %}
+
+{% block content %}
+    <div id="page-wrapper">
+        <div class="row">
+            <div class="col-sm-11">
+                <h3 class="page-header"><i class="fa fa-database fa-fw"></i>{{ name }}</h3>
+            </div>
+            <div class="col-sm-1 text-center">
+                <a href="{{url_for('tracker_admin.admin_query_csv', pk=pk)}}">
+                    <i class="fa fa-2x fa-download"></i>
+                    <br/>
+                    <h4>Download</h4>
+                </a>
+            </div>
+        </div>
+        <div class="row margin-bottom-15">
+            <div class="col-sm-12">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            {% for k in keys %}
+                                <td>{{ k }}</td>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for d in data %}
+                            <tr>
+                                {% for item in d.values() %}
+                                    <td>{{ item }}</td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

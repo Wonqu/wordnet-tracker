@@ -1,0 +1,33 @@
+Flask==1.0.*
+
+# Application server for both development and production.
+gunicorn==19.8.*
+
+# Testing and static analysis.
+pytest==3.5.*
+pytest-cov==2.5.*
+flake8==3.5.*
+pytz==2018.5
+
+# Database.
+Flask-SQLAlchemy==2.3.*
+pymysql==0.7.11
+
+# Forms.
+Flask-WTF==0.14.*
+WTForms-Components==0.9.*
+
+# Extensions.
+celery==4.2.1
+celery-redbeat==0.12.0
+Flask-Admin==1.5.2
+flask-debugtoolbar==0.10.0
+flask-less==0.4
+Flask-Login==0.4.*
+Flask-Limiter==1.0.*
+python-memcached==1.59
+redis==2.10.6
+
+# Supervisor.
+psutil==5.4.8
+watchdog==0.9.0

@@ -1,0 +1,1 @@
+from tracker.blueprints.tracker_admin.views import tracker_admin

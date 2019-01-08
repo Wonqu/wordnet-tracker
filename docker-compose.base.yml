@@ -1,0 +1,14 @@
+version: '2.4'
+
+services:
+  web:
+    build:
+      context: ./app
+      dockerfile: ../Dockerfile
+    image: app
+    volumes:
+      - "./app:/app"
+    command: >
+      gunicorn -c "python:config.gunicorn" --reload "tracker.app:create_app()"
+    ports:
+      - '9000:5000'

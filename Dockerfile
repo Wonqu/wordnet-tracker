@@ -1,15 +1,12 @@
-FROM python:3.7-slim
-MAINTAINER Tomasz Naskręt <tomasz.naskret@pwr.edu.pl>
+# Upgrade to 3.7 when Celery is available for it https://github.com/celery/celery/issues/4500
+FROM python:3.6
+LABEL maintainer="Tomasz Naskręt <tomasz.naskret@pwr.edu.pl>"
 
 WORKDIR /app
 
-COPY requirements.txt requirements.txt
+COPY . .
+
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
-COPY . .
-
-RUN pip install --editable .
-
-CMD gunicorn -c "python:config.gunicorn" "tracker.app:create_app()"
-
+RUN pip install -e .  # docker on windows eats last few characters of a file so a comment is necessary (sadly...)

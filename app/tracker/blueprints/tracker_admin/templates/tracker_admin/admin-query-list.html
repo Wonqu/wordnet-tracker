@@ -1,0 +1,36 @@
+{% extends 'layouts/app.html' %}
+
+{% block title %}{{ name }}{% endblock %}
+
+{% block content %}
+    <div id="page-wrapper">
+        <div class="row margin-bottom-15">
+            <div class="col-sm-12">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <td>ID</td>
+                            <td>Name</td>
+                            <td>Download</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for d in data %}
+                            <tr>
+                                <td>{{ d.id }}</td>
+                                <td><a href="{{url_for('tracker_admin.admin_query', pk=d.id)}}">{{ d.name }}</a></td>
+                                <td>
+                                    <div class="col-sm-1 text-center">
+                                        <a href="{{url_for('tracker_admin.admin_query_csv', pk=d.id)}}">
+                                            <i class="fa fa-2x fa-download"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

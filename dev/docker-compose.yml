@@ -1,0 +1,100 @@
+version: '2.4'
+
+services:
+  web:
+    extends:
+      file: ../docker-compose.base.yml
+      service: web
+    env_file: .env
+    volumes:
+      - "../app:/app"
+    depends_on:
+      - mysql_wordnet
+      - mysql_users
+      - mysql_tracker
+      - redis
+      - celery
+    networks:
+      - dev
+    command: bash -c "python wait-for-db.py -u mysql+pymysql://root:${MYSQL_WORDNET_ROOT_PASSWORD}@mysql_wordnet:3306/${MYSQL_WORDNET_DATABASE} -t 1200 &&
+      python wait-for-db.py -u mysql+pymysql://root:${MYSQL_USERS_ROOT_PASSWORD}@mysql_users:3306/${MYSQL_USERS_DATABASE} -t 30 &&
+      python wait-for-db.py -u mysql+pymysql://root:${MYSQL_TRACKER_ROOT_PASSWORD}@mysql_tracker:3306/${MYSQL_TRACKER_DATABASE} -t 30 &&
+      gunicorn -c 'python:config.gunicorn' --reload 'tracker.app:create_app()'"
+  mysql_wordnet:
+    image: mysql:5.7
+    volumes:
+      - ../mysql/${MYSQL_WORDNET_DATA_FILENAME}:/docker-entrypoint-initdb.d/dump.sql
+      - ../mysql/alter_host.sql:/docker-entrypoint-initdb.d/dump2.sql
+      - ../mysql/mysqld.cnf:/etc/mysql/mysql.conf.d/mysqld.cnf
+    environment:
+      - MYSQL_DATABASE=${MYSQL_WORDNET_DATABASE}
+      - MYSQL_ROOT_PASSWORD=root
+    ports:
+      - "${MYSQL_WORDNET_PORT}:3306"
+    networks:
+    - dev
+  mysql_users:
+    image: mysql:5.7
+    volumes:
+      - ../mysql/${MYSQL_USERS_DATA_FILENAME}:/docker-entrypoint-initdb.d/dump.sql
+      - ../mysql/alter_host.sql:/docker-entrypoint-initdb.d/dump2.sql
+      - ../mysql/mysqld.cnf:/etc/mysql/mysql.conf.d/mysqld.cnf
+    environment:
+      - MYSQL_DATABASE=${MYSQL_USERS_DATABASE}
+      - MYSQL_ROOT_PASSWORD=root
+    ports:
+      - "${MYSQL_USERS_PORT}:3306"
+    networks:
+    - dev
+  mysql_tracker:
+    image: mysql:5.7
+    environment:
+      - MYSQL_DATABASE=${MYSQL_TRACKER_DATABASE}
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_ROOT_HOST=172%
+    ports:
+      - "${MYSQL_TRACKER_PORT}:3306"
+    networks:
+    - dev
+  redis:
+    image: redis:5.0.0-alpine
+    ports:
+      - "6379"
+    networks:
+      - dev
+  celery:
+    image: app
+    env_file: .env
+    volumes:
+    - "../app:/app"
+    depends_on:
+      - redis
+      - mysql_wordnet
+      - mysql_users
+      - mysql_tracker
+    networks:
+      - dev
+    command: bash -c "python wait-for-db.py -u mysql+pymysql://root:${MYSQL_WORDNET_ROOT_PASSWORD}@mysql_wordnet:3306/${MYSQL_WORDNET_DATABASE} -t 1200 &&
+      python wait-for-db.py -u mysql+pymysql://root:${MYSQL_USERS_ROOT_PASSWORD}@mysql_users:3306/${MYSQL_USERS_DATABASE} -t 30 &&
+      python wait-for-db.py -u mysql+pymysql://root:${MYSQL_TRACKER_ROOT_PASSWORD}@mysql_tracker:3306/${MYSQL_TRACKER_DATABASE} -t 30 &&
+      python celery_start.py"
+  celerybeat:
+    image: app
+    env_file: .env
+    volumes:
+    - "../app:/app"
+    depends_on:
+    - redis
+    - mysql_wordnet
+    - mysql_users
+    - mysql_tracker
+    networks:
+    - dev
+    command: bash -c "python wait-for-db.py -u mysql+pymysql://root:${MYSQL_WORDNET_ROOT_PASSWORD}@mysql_wordnet:3306/${MYSQL_WORDNET_DATABASE} -t 1200 &&
+      python wait-for-db.py -u mysql+pymysql://root:${MYSQL_USERS_ROOT_PASSWORD}@mysql_users:3306/${MYSQL_USERS_DATABASE} -t 30 &&
+      python wait-for-db.py -u mysql+pymysql://root:${MYSQL_TRACKER_ROOT_PASSWORD}@mysql_tracker:3306/${MYSQL_TRACKER_DATABASE} -t 30 &&
+      python celerybeat_start.py"
+networks:
+  dev:
+    name: dev_network
+    driver: bridge

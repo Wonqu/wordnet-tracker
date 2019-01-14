@@ -26,5 +26,5 @@ docker-compose up
 
 ###### You should be able to connect to [localhost:9000](localhost:9000) and login with following credentials:
 ###### username: `admin`
-###### password: `admin`
+###### password: `P@ssw0rd`
 ###### To close application stop container with keyboard interrupt (`ctrl+c`)

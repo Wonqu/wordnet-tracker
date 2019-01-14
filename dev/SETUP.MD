@@ -1,5 +1,6 @@
 # Minimal setup steps for development environment
 ###### Assuming the user is on Ubuntu 18.04 or Windows10 with Python and pip is installed (will probably work for other environments that use docker correctly)
+###### Another pre-requisite is [docker for windows](https://docs.docker.com/docker-for-windows/) or [docker for linux](https://docs.docker.com/install/linux/docker-ce/ubuntu/)
 ###### To install everything, do steps 1-4
 ###### To run application locally, do 5-6
 ##### 1. download [wordnet database](http://ws.clarin-pl.eu/public/wordnet-work.LATEST.sql.gz)
@@ -16,7 +17,7 @@ pew new docker
 ```
 pew workon docker
 ```
-##### 6. run following command in wordnet-tracker directory:
+##### 6. run following commands in wordnet-tracker directory:
 ```
 cd dev
 docker-compose up

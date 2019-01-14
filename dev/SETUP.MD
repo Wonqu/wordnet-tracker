@@ -20,6 +20,7 @@ pew workon docker
 ##### 6. run following commands in wordnet-tracker directory:
 ```
 cd dev
+docker-compose build
 docker-compose up
 ```
 

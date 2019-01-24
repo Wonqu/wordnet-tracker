@@ -29,7 +29,7 @@ class AdminQueryView(sqla.ModelView):
         return redirect(url_for('page.home', next=request.url))
 
 
-@tracker_admin.route('/statistics/<int:pk>/')
+@tracker_admin.route('/admin_query/<int:pk>/')
 @login_required
 def admin_query(pk):
     keys, result, query_name = models.AdminQuery.results(pk)
@@ -42,7 +42,7 @@ def admin_query(pk):
     return render_template('tracker_admin/admin-query.html', **context)
 
 
-@tracker_admin.route('/statistics/<int:pk>/csv')
+@tracker_admin.route('/admin_query/<int:pk>/csv')
 @login_required
 def admin_query_csv(pk):
     headings, rows, query_name = models.AdminQuery.results(pk)
@@ -58,15 +58,41 @@ def admin_query_csv(pk):
 
 @tracker_admin.route('/statistics/')
 @login_required
-def admin_query_list():
+def admin_query_list_statistic():
     engine = db.get_engine(current_app, models.AdminQuery.__bind_key__)
     connection = engine.connect()
-    aqs = connection.execute(select([models.AdminQuery]))
+    aqs = connection.execute(
+        select([models.AdminQuery]).where(
+            models.AdminQuery.type == models.AdminQueryTypeEnum.statistic
+        )
+    )
     if aqs.returns_rows:
         aqs = [{key: value for (key, value) in o.items()} for o in aqs]
     else:
         aqs = []
     context = {
-        'data': aqs
+        'data': aqs,
+        'title': 'Statistics'
+    }
+    return render_template('tracker_admin/admin-query-list.html', **context)
+
+
+@tracker_admin.route('/diagnostics/')
+@login_required
+def admin_query_list_diagnostic():
+    engine = db.get_engine(current_app, models.AdminQuery.__bind_key__)
+    connection = engine.connect()
+    aqs = connection.execute(
+        select([models.AdminQuery]).where(
+            models.AdminQuery.type == models.AdminQueryTypeEnum.diagnostic
+        )
+    )
+    if aqs.returns_rows:
+        aqs = [{key: value for (key, value) in o.items()} for o in aqs]
+    else:
+        aqs = []
+    context = {
+        'data': aqs,
+        'title': 'Diagnostics'
     }
     return render_template('tracker_admin/admin-query-list.html', **context)

@@ -167,7 +167,7 @@ def optimised_pagination(query, per_page, page):
     return Pagination(query, page, per_page, total, items)
 
 
-def paginate(query, page=None, per_page=None, total_cache_key=''):
+def paginate(query, page=None, per_page=None, total_cache_key='', update=False):
     """Returns ``per_page`` items from page ``page``.
 
     If ``page`` or ``per_page`` are ``None``, they will be retrieved from
@@ -242,7 +242,10 @@ def paginate(query, page=None, per_page=None, total_cache_key=''):
         total = len(items)
     else:
         if total_cache_key != '':
-            total = cache.get(total_cache_key)
+            if update:
+                total = None
+            else:
+                total = cache.get(total_cache_key)
             if total is None:
                 total = query.order_by(None).count()
                 cache.set(total_cache_key, total, timeout=7200)

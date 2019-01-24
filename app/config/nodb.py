@@ -1,0 +1,1 @@
+from app.config.dev import *

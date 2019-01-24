@@ -1,13 +1,12 @@
 import datetime
 from calendar import monthrange
-from datetime import timedelta, datetime
 from time import strftime, gmtime
 
 from flask import Blueprint, render_template, jsonify, request
 from flask_login import login_required
-from flask_sqlalchemy import xrange
 
-from tracker.blueprints.page.models import find_created_items_today, find_user_activity_now, find_user_activity_month
+from tracker.blueprints.page.models import find_created_items_today, find_user_activity_month, \
+    user_activity_cached
 from tracker.extensions import cache
 
 page = Blueprint('page', __name__, template_folder='templates')
@@ -31,28 +30,9 @@ def home():
 def users_activity_now():
 
     q = request.args.get('q', '')
+    today = strftime("%Y-%m-%d", gmtime())
 
-    active = find_user_activity_now(strftime("%Y-%m-%d", gmtime()), q)
-
-    start_date = datetime(2018, 1, 1, 0, 0, 0)
-    d = []
-    v = []
-    users = set()
-    for x in active:
-        v.append(x)
-        users.add(x[0])
-
-    for td in (start_date + timedelta(hours=1 * it) for it in xrange(24)):
-        row = dict()
-        row['y'] = td.strftime("%H:%M")
-        for u in users:
-            row[u] = 0
-        d.append(row)
-
-    for r in v:
-        for item in range(0, len(d)):
-            if d[item]['y'] == r[1]:
-                d[item][r[0]] = r[2]
+    d, users = user_activity_cached(today, q)
 
     response = {
         'data': d,
@@ -126,28 +106,7 @@ def users_activity_monthly():
 @page.route('/api/users/activity/date/<string:_date>')
 def users_activity_by_day(_date):
 
-    active = find_user_activity_now(_date, '')
-
-    start_date = datetime(2018, 1, 1, 0, 0, 0)
-    d = []
-    v = []
-    users = set()
-
-    for x in active:
-        v.append(x)
-        users.add(x[0])
-
-    for td in (start_date + timedelta(hours=1 * it) for it in xrange(24)):
-        row = dict()
-        row['y'] = td.strftime("%H:%M")
-        for u in users:
-            row[u] = 0
-        d.append(row)
-
-    for r in v:
-        for item in range(0, len(d)):
-            if d[item]['y'] == r[1]:
-                d[item][r[0]] = r[2]
+    d, users = user_activity_cached(_date, '')
 
     response = {
         'data': d,

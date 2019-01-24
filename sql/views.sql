@@ -1,4 +1,4 @@
-CREATE VIEW view_tracker_synsets_history AS
+CREATE OR REPLACE VIEW view_tracker_synsets_history AS
 SELECT t.id as id, t.datetime, t.user,
 case
 	when t.inserted = 1 and t.table ='synset' then 'created'
@@ -28,7 +28,7 @@ AND ( uas.tid IS NOT NULL OR ts.tid IS NOT NULL )
 AND ( t.inserted = 1 OR t.deleted = 1 OR t.data_before_change IS NOT NULL)
 ORDER BY t.id DESC
 
-CREATE VIEW view_tracker_synsets_relations_history AS
+CREATE OR REPLACE VIEW view_tracker_synsets_relations_history AS
 SELECT
  t.id as id, t.datetime, t.user,
 case
@@ -50,7 +50,7 @@ WHERE t.table = "synsetrelation"
 AND ( t.inserted = 1 OR t.deleted = 1 OR t.data_before_change IS NOT NULL)
 ORDER BY t.id DESC
 
-CREATE VIEW view_tracker_sense_relations_history AS
+CREATE OR REPLACE VIEW view_tracker_sense_relations_history AS
 SELECT
  t.id as id, t.datetime, t.user,
 case
@@ -72,7 +72,7 @@ WHERE t.table = "lexicalrelation"
 AND ( t.inserted = 1 OR t.deleted = 1 OR t.data_before_change IS NOT NULL)
 ORDER BY t.id DESC
 
-CREATE VIEW view_tracker_sense_history AS
+CREATE OR REPLACE VIEW view_tracker_sense_history AS
 SELECT tr.id, tr.datetime, tr.user,
 case
 	when tr.inserted = 1  then 'created'
@@ -93,7 +93,7 @@ WHERE tr.data_before_change IS NULL AND tr.`table` = 'lexicalunit'
 ORDER BY tr.datetime desc
 
 
-CREATE VIEW view_emotion_disagreement AS
+CREATE OR REPLACE VIEW view_emotion_disagreement AS
 SELECT l.ID as sense_id, concat(l.lemma,' ', l.variant) as lemma, l.status,
           substr(innerCnt.markedness, 1, locate(';', innerCnt.markedness) -1) as markedness0,
           substr(innerCnt.markedness FROM locate(';', innerCnt.markedness) + 1) as markedness1,

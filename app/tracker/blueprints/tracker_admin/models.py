@@ -1,9 +1,16 @@
+import enum
+
 from flask import current_app
 from sqlalchemy import select
 from sqlalchemy.orm import validates
 
 from tracker.blueprints.synset.models import Tracker
 from tracker.extensions import db, cache
+
+
+class AdminQueryTypeEnum(enum.Enum):
+    statistic = 0
+    diagnostic = 1
 
 
 class AdminQuery(db.Model):
@@ -13,6 +20,7 @@ class AdminQuery(db.Model):
     name = db.Column(db.String(255))
     query_text = db.Column(db.Text())
     enable_autorun = db.Column(db.Boolean())
+    type = db.Column('type', db.Enum(AdminQueryTypeEnum), default=AdminQueryTypeEnum.statistic)
 
     required_words = ('select', 'from')
     banned_words = (

@@ -66,8 +66,7 @@ def register_admin(app):
             endpoint='admin',
             index_view=AdminIndexView()
         )
-        app.logger.critical(url_for('admin.index'))
-        app.logger.critical(admin.endpoint)
+        app.logger.debug("Ok!")
         admin.add_link(MenuLink(name='Tracker Home', url=url_for('page.home')))
         admin.add_view(AdminQueryView(AdminQuery, db.session, category='Models'))
 

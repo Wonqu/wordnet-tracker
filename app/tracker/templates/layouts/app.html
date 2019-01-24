@@ -24,10 +24,6 @@
                 <ul class="dropdown-menu dropdown-user">
                     <li><a href="{{ url_for('user.profile') }}"><i class="fa fa-user fa-fw"></i> User Profile</a></li>
                     <li class="divider"></li>
-                    {% if current_user.role == 'ADMIN' %}
-                        <li><a href="{{ url_for('admin.index') }}"><i class="fa fa-user fa-fw"></i> Admin Panel</a></li>
-                        <li class="divider"></li>
-                    {% endif %}
                     <li><a href="{{ url_for('user.logout') }}"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
                     </li>
                 </ul>
@@ -51,6 +47,11 @@
 
                         <!-- /input-group -->
                     </li>
+                    {% if current_user.role == 'ADMIN' %}
+                        <li>
+                            <a href="{{ url_for('admin.index') }}"><i class="fa fa-user fa-fw"></i> Admin Panel</a>
+                        </li>
+                    {% endif %}
                     <li>
                         <a href="{{ url_for('page.home') }}"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
                     </li>
@@ -97,7 +98,10 @@
                         </ul>
                     </li>
                     <li>
-                        <a href="{{ url_for('tracker_admin.admin_query_list') }}"><i class="fa fa-clipboard fa-fw"></i> Statistics</a>
+                        <a href="{{ url_for('tracker_admin.admin_query_list_diagnostic') }}"><i class="fa fa-clipboard fa-fw"></i> Diagnostics</a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('tracker_admin.admin_query_list_statistic') }}"><i class="fa fa-pie-chart fa-fw"></i> Statistics</a>
                     </li>
                 </ul>
             </div>
